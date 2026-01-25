@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章管理 - Word King</title>
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .page-header {
+            background-color: var(--bg-primary);
+            padding: 32px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .main-content {
+            padding: 32px 20px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 280px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            font-size: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 18px;
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-primary);
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .article-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .article-item {
+            background-color: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        .article-item:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .article-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .article-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .article-excerpt {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .article-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .article-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .article-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .difficulty-easy {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+
+        .difficulty-medium {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+
+        .difficulty-hard {
+            background-color: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .modal-header {
+            background-color: var(--bg-secondary);
+        }
+
+        .word-count {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 24px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+            }
+
+            .article-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .article-title {
+                font-size: 18px;
+            }
+
+            .article-footer {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+
+            .article-meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="bg-primary">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; height: 70px;">
+                <div style="font-size: 24px; font-weight: 700; color: var(--primary-color);">
+                    <a href="index.html" style="text-decoration: none; color: inherit;">📚 Word King</a>
+                </div>
+                <div class="nav">
+                    <a href="word-management.html" class="nav-link">单词管理</a>
+                    <a href="article-management.html" class="nav-link active">文章管理</a>
+                    <a href="word-practice.html" class="nav-link">单词练习</a>
+                    <a href="article-reading.html" class="nav-link">文章阅读</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <header class="page-header">
+        <div class="container">
+            <h1 class="page-title">文章管理</h1>
+            <p class="page-subtitle">创建、编辑和管理您的学习文章</p>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 工具栏 -->
+            <div class="toolbar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="搜索文章...">
+                </div>
+                <select class="filter-select">
+                    <option value="all">全部分类</option>
+                    <option value="news">新闻</option>
+                    <option value="story">故事</option>
+                    <option value="essay">散文</option>
+                    <option value="science">科普</option>
+                </select>
+                <select class="filter-select">
+                    <option value="all">全部难度</option>
+                    <option value="easy">简单</option>
+                    <option value="medium">中等</option>
+                    <option value="hard">困难</option>
+                </select>
+                <button class="btn btn-primary" onclick="openModal()">➕ 创建文章</button>
+            </div>
+
+            <!-- 文章列表 -->
+            <div class="article-list">
+                <!-- 示例文章项 1 -->
+                <div class="article-item">
+                    <div class="article-header">
+                        <div>
+                            <h3 class="article-title">The Benefits of Reading</h3>
+                            <div class="article-tags">
+                                <span class="tag tag-primary">散文</span>
+                                <span class="difficulty-badge difficulty-medium">中等</span>
+                            </div>
+                        </div>
+                        <div class="article-actions">
+                            <button class="btn btn-sm btn-outline">编辑</button>
+                            <button class="btn btn-sm btn-danger">删除</button>
+                        </div>
+                    </div>
+                    <p class="article-excerpt">
+                        Reading is one of the most enriching activities a person can engage in. It opens up new worlds, introduces us to different perspectives, and enhances our understanding of the world around us. Whether you're reading fiction, non-fiction, or poetry, each book has something unique to offer.
+                    </p>
+                    <div class="article-footer">
+                        <div class="article-meta">
+                            <div class="article-meta-item">
+                                <span>📅</span>
+                                <span>2026-01-20</span>
+                            </div>
+                            <div class="article-meta-item">
+                                <span>📝</span>
+                                <span>245 词</span>
+                            </div>
+                            <div class="article-meta-item">
+                                <span>🏷️</span>
+                                <span>12 个生词</span>
+                            </div>
+                        </div>
+                        <a href="article-reading.html" class="btn btn-sm btn-primary">阅读文章</a>
+                    </div>
+                </div>
+
+                <!-- 示例文章项 2 -->
+                <div class="article-item">
+                    <div class="article-header">
+                        <div>
+                            <h3 class="article-title">A Journey Through Time</h3>
+                            <div class="article-tags">
+                                <span class="tag tag-success">故事</span>
+                                <span class="difficulty-badge difficulty-easy">简单</span>
+                            </div>
+                        </div>
+                        <div class="article-actions">
+                            <button class="btn btn-sm btn-outline">编辑</button>
+                            <button class="btn btn-sm btn-danger">删除</button>
+                        </div>
+                    </div>
+                    <p class="article-excerpt">
+                        Once upon a time, in a small village nestled between rolling hills and a sparkling river, there lived a young girl named Lily. She had a curious mind and a heart full of dreams. Every day, she would explore the world around her, discovering hidden treasures and meeting interesting characters.
+                    </p>
+                    <div class="article-footer">
+                        <div class="article-meta">
+                            <div class="article-meta-item">
+                                <span>📅</span>
+                                <span>2026-01-22</span>
+                            </div>
+                            <div class="article-meta-item">
+                                <span>📝</span>
+                                <span>189 词</span>
+                            </div>
+                            <div class="article-meta-item">
+                                <span>🏷️</span>
+                                <span>8 个生词</span>
+                            </div>
+                        </div>
+                        <a href="article-reading.html" class="btn btn-sm btn-primary">阅读文章</a>
+                    </div>
+                </div>
+
+                <!-- 示例文章项 3 -->
+                <div class="article-item">
+                    <div class="article-header">
+                        <div>
+                            <h3 class="article-title">The Science of Sleep</h3>
+                            <div class="article-tags">
+                                <span class="tag tag-warning">科普</span>
+                                <span class="difficulty-badge difficulty-hard">困难</span>
+                            </div>
+                        </div>
+                        <div class="article-actions">
+                            <button class="btn btn-sm btn-outline">编辑</button>
+                            <button class="btn btn-sm btn-danger">删除</button>
+                        </div>
+                    </div>
+                    <p class="article-excerpt">
+                        Sleep is a fundamental biological process that plays a crucial role in maintaining our physical and mental health. During sleep, our bodies repair tissues, synthesize hormones, and consolidate memories. Scientists have discovered that sleep consists of several distinct stages, each serving unique functions.
+                    </p>
+                    <div class="article-footer">
+                        <div class="article-meta">
+                            <div class="article-meta-item">
+                                <span>📅</span>
+                                <span>2026-01-23</span>
+                            </div>
+                            <div class="article-meta-item">
+                                <span>📝</span>
+                                <span>312 词</span>
+                            </div>
+                            <div class="article-meta-item">
+                                <span>🏷️</span>
+                                <span>18 个生词</span>
+                            </div>
+                        </div>
+                        <a href="article-reading.html" class="btn btn-sm btn-primary">阅读文章</a>
+                    </div>
+                </div>
+
+                <!-- 示例文章项 4 -->
+                <div class="article-item">
+                    <div class="article-header">
+                        <div>
+                            <h3 class="article-title">Technology in Modern Life</h3>
+                            <div class="article-tags">
+                                <span class="tag">新闻</span>
+                                <span class="difficulty-badge difficulty-medium">中等</span>
+                            </div>
+                        </div>
+                        <div class="article-actions">
+                            <button class="btn btn-sm btn-outline">编辑</button>
+                            <button class="btn btn-sm btn-danger">删除</button>
+                        </div>
+                    </div>
+                    <p class="article-excerpt">
+                        Technology has transformed nearly every aspect of our daily lives. From smartphones to smart homes, we are constantly surrounded by innovative solutions designed to make life easier and more efficient. However, this rapid technological advancement also brings new challenges and considerations.
+                    </p>
+                    <div class="article-footer">
+                        <div class="article-meta">
+                            <div class="article-meta-item">
+                                <span>📅</span>
+                                <span>2026-01-24</span>
+                            </div>
+                            <div class="article-meta-item">
+                                <span>📝</span>
+                                <span>278 词</span>
+                            </div>
+                            <div class="article-meta-item">
+                                <span>🏷️</span>
+                                <span>15 个生词</span>
+                            </div>
+                        </div>
+                        <a href="article-reading.html" class="btn btn-sm btn-primary">阅读文章</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 创建/编辑文章模态框 -->
+    <div class="modal" id="articleModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title">创建新文章</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">文章标题 *</label>
+                    <input type="text" class="form-input" placeholder="请输入文章标题">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">文章分类 *</label>
+                    <select class="form-select">
+                        <option value="news">新闻</option>
+                        <option value="story">故事</option>
+                        <option value="essay">散文</option>
+                        <option value="science">科普</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">难度等级 *</label>
+                    <select class="form-select">
+                        <option value="easy">简单</option>
+                        <option value="medium">中等</option>
+                        <option value="hard">困难</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">文章内容 *</label>
+                    <textarea class="form-textarea" style="min-height: 300px;" placeholder="请输入文章内容"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">关联单词标签</label>
+                    <input type="text" class="form-input" placeholder="用逗号分隔单词标签">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('articleModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('articleModal').classList.remove('active');
+        }
+
+        // 点击模态框外部关闭
+        document.getElementById('articleModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

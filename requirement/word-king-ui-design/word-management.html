@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单词管理 - Word King</title>
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .page-header {
+            background-color: var(--bg-primary);
+            padding: 32px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .main-content {
+            padding: 32px 20px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 280px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            font-size: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 18px;
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-primary);
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .word-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .word-item {
+            background-color: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        .word-item:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .word-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .word-english {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .word-phonetic {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-left: 12px;
+        }
+
+        .word-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .word-chinese {
+            font-size: 18px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .word-example {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        .word-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .word-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .word-meta {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .modal-header {
+            background-color: var(--bg-secondary);
+        }
+
+        .phrase-badge {
+            background-color: var(--warning-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 24px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+            }
+
+            .word-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .word-english {
+                font-size: 20px;
+            }
+
+            .word-footer {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="bg-primary">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; height: 70px;">
+                <div style="font-size: 24px; font-weight: 700; color: var(--primary-color);">
+                    <a href="index.html" style="text-decoration: none; color: inherit;">📚 Word King</a>
+                </div>
+                <div class="nav">
+                    <a href="word-management.html" class="nav-link active">单词管理</a>
+                    <a href="article-management.html" class="nav-link">文章管理</a>
+                    <a href="word-practice.html" class="nav-link">单词练习</a>
+                    <a href="article-reading.html" class="nav-link">文章阅读</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <header class="page-header">
+        <div class="container">
+            <h1 class="page-title">单词管理</h1>
+            <p class="page-subtitle">添加、编辑和管理您的单词和短语</p>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 工具栏 -->
+            <div class="toolbar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="搜索单词或短语...">
+                </div>
+                <select class="filter-select">
+                    <option value="all">全部</option>
+                    <option value="word">单词</option>
+                    <option value="phrase">短语</option>
+                </select>
+                <select class="filter-select">
+                    <option value="all">全部分类</option>
+                    <option value="daily">日常用语</option>
+                    <option value="business">商务英语</option>
+                    <option value="academic">学术词汇</option>
+                </select>
+                <button class="btn btn-primary" onclick="openModal()">➕ 添加单词</button>
+            </div>
+
+            <!-- 单词列表 -->
+            <div class="word-list">
+                <!-- 示例单词项 1 -->
+                <div class="word-item">
+                    <div class="word-header">
+                        <div>
+                            <span class="word-english">serendipity</span>
+                            <span class="word-phonetic">/ˌserənˈdɪpəti/</span>
+                        </div>
+                        <div class="word-actions">
+                            <button class="btn btn-sm btn-outline">编辑</button>
+                            <button class="btn btn-sm btn-danger">删除</button>
+                        </div>
+                    </div>
+                    <div class="word-chinese">n. 意外发现珍奇事物的本领；机缘凑巧</div>
+                    <div class="word-example">The discovery of penicillin was a happy case of serendipity.</div>
+                    <div class="word-footer">
+                        <div class="word-tags">
+                            <span class="tag tag-primary">学术词汇</span>
+                            <span class="tag">高级</span>
+                        </div>
+                        <div class="word-meta">创建于 2026-01-20</div>
+                    </div>
+                </div>
+
+                <!-- 示例单词项 2 -->
+                <div class="word-item">
+                    <div class="word-header">
+                        <div>
+                            <span class="word-english">break a leg</span>
+                            <span class="phrase-badge">短语</span>
+                        </div>
+                        <div class="word-actions">
+                            <button class="btn btn-sm btn-outline">编辑</button>
+                            <button class="btn btn-sm btn-danger">删除</button>
+                        </div>
+                    </div>
+                    <div class="word-chinese">祝你好运（尤指演出前）</div>
+                    <div class="word-example">Break a leg! I know you'll do great tonight.</div>
+                    <div class="word-footer">
+                        <div class="word-tags">
+                            <span class="tag tag-warning">日常用语</span>
+                            <span class="tag">中级</span>
+                        </div>
+                        <div class="word-meta">创建于 2026-01-22</div>
+                    </div>
+                </div>
+
+                <!-- 示例单词项 3 -->
+                <div class="word-item">
+                    <div class="word-header">
+                        <div>
+                            <span class="word-english">epiphany</span>
+                            <span class="word-phonetic">/ɪˈpɪfəni/</span>
+                        </div>
+                        <div class="word-actions">
+                            <button class="btn btn-sm btn-outline">编辑</button>
+                            <button class="btn btn-sm btn-danger">删除</button>
+                        </div>
+                    </div>
+                    <div class="word-chinese">n. 顿悟；突然的领悟</div>
+                    <div class="word-example">She had an epiphany about her career path.</div>
+                    <div class="word-footer">
+                        <div class="word-tags">
+                            <span class="tag tag-primary">学术词汇</span>
+                            <span class="tag">高级</span>
+                        </div>
+                        <div class="word-meta">创建于 2026-01-23</div>
+                    </div>
+                </div>
+
+                <!-- 示例单词项 4 -->
+                <div class="word-item">
+                    <div class="word-header">
+                        <div>
+                            <span class="word-english">piece of cake</span>
+                            <span class="phrase-badge">短语</span>
+                        </div>
+                        <div class="word-actions">
+                            <button class="btn btn-sm btn-outline">编辑</button>
+                            <button class="btn btn-sm btn-danger">删除</button>
+                        </div>
+                    </div>
+                    <div class="word-chinese">小菜一碟；非常容易的事</div>
+                    <div class="word-example">That test was a piece of cake!</div>
+                    <div class="word-footer">
+                        <div class="word-tags">
+                            <span class="tag tag-warning">日常用语</span>
+                            <span class="tag">初级</span>
+                        </div>
+                        <div class="word-meta">创建于 2026-01-24</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 添加/编辑单词模态框 -->
+    <div class="modal" id="wordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">添加新单词</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">类型</label>
+                    <select class="form-select">
+                        <option value="word">单词</option>
+                        <option value="phrase">短语</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">单词/短语 *</label>
+                    <input type="text" class="form-input" placeholder="请输入单词或短语">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">音标</label>
+                    <input type="text" class="form-input" placeholder="例如：/ˈhæpi/">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">中文释义 *</label>
+                    <input type="text" class="form-input" placeholder="请输入中文释义">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">例句</label>
+                    <textarea class="form-textarea" placeholder="请输入例句"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">分类</label>
+                    <select class="form-select">
+                        <option value="daily">日常用语</option>
+                        <option value="business">商务英语</option>
+                        <option value="academic">学术词汇</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">难度</label>
+                    <select class="form-select">
+                        <option value="beginner">初级</option>
+                        <option value="intermediate">中级</option>
+                        <option value="advanced">高级</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('wordModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('wordModal').classList.remove('active');
+        }
+
+        // 点击模态框外部关闭
+        document.getElementById('wordModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

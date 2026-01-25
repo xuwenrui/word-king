@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章阅读 - Word King</title>
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        .page-header {
+            background-color: var(--bg-primary);
+            padding: 32px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .main-content {
+            padding: 32px 20px;
+        }
+
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .article-header {
+            margin-bottom: 32px;
+        }
+
+        .article-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            flex-wrap: wrap;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .article-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .article-content {
+            background-color: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-sm);
+            line-height: 1.8;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .article-content p {
+            margin-bottom: 24px;
+        }
+
+        .article-content h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .article-content h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .clickable-word {
+            color: var(--primary-color);
+            cursor: pointer;
+            border-bottom: 2px dashed var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .clickable-word:hover {
+            background-color: #EFF6FF;
+            border-bottom-style: solid;
+        }
+
+        .clickable-word.highlighted {
+            background-color: #FEF3C7;
+            border-bottom-color: var(--warning-color);
+        }
+
+        .word-tooltip {
+            position: absolute;
+            background-color: var(--bg-primary);
+            border: 2px solid var(--primary-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            min-width: 250px;
+            max-width: 350px;
+            display: none;
+        }
+
+        .word-tooltip.show {
+            display: block;
+        }
+
+        .tooltip-word {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .tooltip-phonetic {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+
+        .tooltip-meaning {
+            font-size: 16px;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .tooltip-example {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 16px;
+            padding-left: 12px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .tooltip-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .article-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+            justify-content: center;
+        }
+
+        .progress-bar-container {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 32px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: var(--bg-primary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .sidebar {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-lg);
+            max-width: 300px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .sidebar.show {
+            display: block;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .sidebar-close:hover {
+            color: var(--text-primary);
+        }
+
+        .collected-words {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .collected-word-item {
+            padding: 12px;
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .collected-word-item:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        .collected-word-english {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+
+        .collected-word-chinese {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 24px;
+            }
+
+            .article-title {
+                font-size: 28px;
+            }
+
+            .article-content {
+                padding: 24px;
+                font-size: 16px;
+            }
+
+            .article-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .sidebar {
+                position: fixed;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                transform: none;
+                border-radius: 0;
+                max-width: 100%;
+                max-height: 100%;
+            }
+
+            .article-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="bg-primary">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; height: 70px;">
+                <div style="font-size: 24px; font-weight: 700; color: var(--primary-color);">
+                    <a href="index.html" style="text-decoration: none; color: inherit;">📚 Word King</a>
+                </div>
+                <div class="nav">
+                    <a href="word-management.html" class="nav-link">单词管理</a>
+                    <a href="article-management.html" class="nav-link">文章管理</a>
+                    <a href="word-practice.html" class="nav-link">单词练习</a>
+                    <a href="article-reading.html" class="nav-link active">文章阅读</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <header class="page-header">
+        <div class="container">
+            <h1 class="page-title">文章阅读</h1>
+            <p class="page-subtitle">在阅读中学习，点击单词查看释义</p>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <div class="container">
+            <div class="article-container">
+                <!-- 阅读进度 -->
+                <div class="progress-bar-container">
+                    <div class="progress-label">
+                        <span>阅读进度</span>
+                        <span>65%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 65%;"></div>
+                    </div>
+                </div>
+
+                <!-- 文章头部 -->
+                <div class="article-header">
+                    <h2 class="article-title">The Benefits of Reading</h2>
+                    <div class="article-meta">
+                        <div class="meta-item">
+                            <span>📅</span>
+                            <span>2026-01-20</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>📝</span>
+                            <span>245 词</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>⏱️</span>
+                            <span>约 3 分钟</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>📊</span>
+                            <span>中等难度</span>
+                        </div>
+                    </div>
+                    <div class="article-tags">
+                        <span class="tag tag-primary">散文</span>
+                        <span class="tag">学习</span>
+                        <span class="tag">成长</span>
+                    </div>
+                </div>
+
+                <!-- 文章内容 -->
+                <div class="article-content">
+                    <p>
+                        Reading is one of the most <span class="clickable-word" onclick="showWordTooltip(event, 'enriching', 'adj. 丰富的，使人充实的', '/ɪnˈrɪtʃɪŋ/', 'Reading is an enriching experience that opens new horizons.')">enriching</span> activities a person can engage in. It opens up new worlds, introduces us to different perspectives, and enhances our understanding of the world around us. Whether you're reading fiction, non-fiction, or poetry, each book has something unique to offer.
+                    </p>
+
+                    <p>
+                        One of the greatest benefits of reading is its ability to improve our cognitive functions. Studies have shown that regular reading can help maintain brain health and may even slow the <span class="clickable-word" onclick="showWordTooltip(event, 'progression', 'n. 进展，发展', '/prəˈɡreʃn/', 'The progression of the disease was slower in patients who read regularly.')">progression</span> of cognitive decline as we age. When we read, our brains are actively engaged in processing information, making connections, and building new neural pathways.
+                    </p>
+
+                    <h2>Expanding Vocabulary</h2>
+
+                    <p>
+                        Reading is an excellent way to expand your vocabulary. As you encounter new words in context, you naturally learn their meanings and proper usage. This is far more effective than simply memorizing word lists. The more you read, the more words you'll <span class="clickable-word" onclick="showWordTooltip(event, 'acquire', 'v. 获得，习得', '/əˈkwaɪər/', 'Children acquire language skills naturally through interaction.')">acquire</span>, and the better you'll become at expressing yourself both in writing and in speech.
+                    </p>
+
+                    <p>
+                        Moreover, reading exposes you to different writing styles and techniques. By observing how skilled authors craft their sentences, structure their paragraphs, and develop their arguments, you can improve your own writing skills. This is why many successful writers are also avid readers.
+                    </p>
+
+                    <h2>Emotional Intelligence</h2>
+
+                    <p>
+                        Reading fiction, in particular, has been shown to increase empathy and emotional intelligence. When we immerse ourselves in a story, we experience the characters' emotions and see the world through their eyes. This helps us develop a deeper understanding of human nature and improves our ability to relate to others in real life.
+                    </p>
+
+                    <h3>Stress Reduction</h3>
+
+                    <p>
+                        In our fast-paced world, reading can serve as a form of relaxation and stress relief. Getting lost in a good book allows us to escape from our daily worries and enter a different world. Even just six minutes of reading can reduce stress levels by more than two-thirds, according to research.
+                    </p>
+
+                    <p>
+                        Whether you prefer physical books, e-readers, or audiobooks, the important thing is to make reading a regular part of your life. Start with just 15-20 minutes a day, and gradually increase your reading time as you develop the habit. Your brain, your vocabulary, and your overall well-being will thank you.
+                    </p>
+                </div>
+
+                <!-- 文章操作按钮 -->
+                <div class="article-actions">
+                    <button class="btn btn-outline" onclick="toggleSidebar()">📚 收藏的单词 (3)</button>
+                    <button class="btn btn-outline">❤️ 收藏文章</button>
+                    <button class="btn btn-outline">📤 分享</button>
+                    <a href="article-management.html" class="btn btn-primary">返回文章列表</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 单词提示框 -->
+    <div class="word-tooltip" id="wordTooltip">
+        <div class="tooltip-word" id="tooltipWord">enriching</div>
+        <div class="tooltip-phonetic" id="tooltipPhonetic">/ɪnˈrɪtʃɪŋ/</div>
+        <div class="tooltip-meaning" id="tooltipMeaning">adj. 丰富的，使人充实的</div>
+        <div class="tooltip-example" id="tooltipExample">Reading is an enriching experience that opens new horizons.</div>
+        <div class="tooltip-actions">
+            <button class="btn btn-sm btn-primary" onclick="collectWord()">收藏</button>
+            <button class="btn btn-sm btn-outline" onclick="closeTooltip()">关闭</button>
+        </div>
+    </div>
+
+    <!-- 收藏单词侧边栏 -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-title">
+            <span>收藏的单词</span>
+            <button class="sidebar-close" onclick="toggleSidebar()">&times;</button>
+        </div>
+        <div class="collected-words">
+            <div class="collected-word-item">
+                <div class="collected-word-english">enriching</div>
+                <div class="collected-word-chinese">adj. 丰富的，使人充实的</div>
+            </div>
+            <div class="collected-word-item">
+                <div class="collected-word-english">progression</div>
+                <div class="collected-word-chinese">n. 进展，发展</div>
+            </div>
+            <div class="collected-word-item">
+                <div class="collected-word-english">acquire</div>
+                <div class="collected-word-chinese">v. 获得，习得</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentWord = '';
+
+        function showWordTooltip(event, word, meaning, phonetic, example) {
+            event.stopPropagation();
+            currentWord = word;
+
+            const tooltip = document.getElementById('wordTooltip');
+            const wordElement = event.target;
+
+            document.getElementById('tooltipWord').textContent = word;
+            document.getElementById('tooltipPhonetic').textContent = phonetic;
+            document.getElementById('tooltipMeaning').textContent = meaning;
+            document.getElementById('tooltipExample').textContent = example;
+
+            // 计算位置
+            const rect = wordElement.getBoundingClientRect();
+            tooltip.style.left = rect.left + 'px';
+            tooltip.style.top = (rect.bottom + 10) + 'px';
+
+            tooltip.classList.add('show');
+            wordElement.classList.add('highlighted');
+        }
+
+        function closeTooltip() {
+            const tooltip = document.getElementById('wordTooltip');
+            tooltip.classList.remove('show');
+
+            document.querySelectorAll('.clickable-word').forEach(word => {
+                word.classList.remove('highlighted');
+            });
+        }
+
+        function collectWord() {
+            alert('已收藏单词: ' + currentWord);
+            closeTooltip();
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('show');
+        }
+
+        // 点击页面其他地方关闭提示框
+        document.addEventListener('click', function(event) {
+            const tooltip = document.getElementById('wordTooltip');
+            if (!tooltip.contains(event.target) && !event.target.classList.contains('clickable-word')) {
+                closeTooltip();
+            }
+        });
+
+        // 滚动时更新阅读进度
+        window.addEventListener('scroll', function() {
+            const articleContent = document.querySelector('.article-content');
+            const progressBar = document.querySelector('.progress-fill');
+            const progressText = document.querySelector('.progress-label span:last-child');
+
+            const rect = articleContent.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            const scrollTop = window.scrollY;
+            const articleTop = rect.top + scrollTop;
+            const articleHeight = rect.height;
+
+            const progress = Math.min(100, Math.max(0, ((scrollTop - articleTop + windowHeight / 2) / articleHeight) * 100));
+
+            progressBar.style.width = progress + '%';
+            progressText.textContent = Math.round(progress) + '%';
+        });
+    </script>
+</body>
+</html>

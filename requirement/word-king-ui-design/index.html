@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word King - 单词学习助手</title>
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        /* 首页特有样式 - Apple 官网风格 */
+        .hero {
+            background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F7 100%);
+            color: var(--text-primary);
+            padding: 120px 20px 100px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+            line-height: 1.08;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .hero p {
+            font-size: 21px;
+            font-weight: 400;
+            line-height: 1.38;
+            letter-spacing: 0.004em;
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero .btn {
+            background-color: var(--primary-color);
+            color: var(--text-white);
+        }
+
+        .hero .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .hero .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .hero .btn-outline:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--primary-hover);
+        }
+
+        .features {
+            padding: 100px 20px;
+            background-color: var(--bg-primary);
+        }
+
+        .features-title {
+            text-align: center;
+            font-size: 48px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 80px;
+            color: var(--text-primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            padding: 48px 32px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-base);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .feature-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 28px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .feature-title {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.015em;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .feature-desc {
+            font-size: 17px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            letter-spacing: -0.022em;
+        }
+
+        .cta {
+            background-color: var(--bg-secondary);
+            padding: 120px 20px;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: 48px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .cta-desc {
+            font-size: 21px;
+            font-weight: 400;
+            line-height: 1.38;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        footer {
+            background-color: var(--bg-primary);
+            padding: 60px 20px;
+            text-align: center;
+            border-top: 1px solid var(--border-light);
+        }
+
+        footer p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            letter-spacing: -0.01em;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 80px 20px 60px;
+            }
+
+            .hero h1 {
+                font-size: 40px;
+                line-height: 1.15;
+            }
+
+            .hero p {
+                font-size: 19px;
+                margin-bottom: 36px;
+            }
+
+            .features {
+                padding: 60px 20px;
+            }
+
+            .features-title {
+                font-size: 36px;
+                margin-bottom: 50px;
+            }
+
+            .features-grid {
+                gap: 24px;
+            }
+
+            .feature-card {
+                padding: 36px 24px;
+            }
+
+            .cta {
+                padding: 80px 20px;
+            }
+
+            .cta-title {
+                font-size: 32px;
+            }
+
+            .cta-desc {
+                font-size: 19px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 17px;
+            }
+
+            .features-title {
+                font-size: 28px;
+            }
+
+            .feature-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+
+            .feature-title {
+                font-size: 20px;
+            }
+
+            .feature-desc {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="bg-primary" style="background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-light); position: sticky; top: 0; z-index: 100;">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; height: 64px;">
+                <div style="font-size: 22px; font-weight: 600; letter-spacing: -0.015em; color: var(--text-primary);">
+                    <a href="index.html" style="text-decoration: none; color: inherit;">📚 Word King</a>
+                </div>
+                <div class="nav">
+                    <a href="word-management.html" class="nav-link">单词管理</a>
+                    <a href="article-management.html" class="nav-link">文章管理</a>
+                    <a href="word-practice.html" class="nav-link">单词练习</a>
+                    <a href="article-reading.html" class="nav-link">文章阅读</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="container">
+            <h1>掌握英语，从单词开始</h1>
+            <p>Word King 是一款专业的英语单词学习助手，帮助您高效管理单词、练习拼写、通过阅读提升英语水平。</p>
+            <div class="hero-buttons">
+                <a href="word-management.html" class="btn btn-primary">开始学习</a>
+                <a href="article-reading.html" class="btn btn-outline">阅读文章</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 功能特性 -->
+    <section class="features">
+        <div class="container">
+            <h2 class="features-title">核心功能</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3 class="feature-title">单词管理</h3>
+                    <p class="feature-desc">轻松添加、编辑和管理您的单词和短语，支持分类标签和搜索功能。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3 class="feature-title">文章管理</h3>
+                    <p class="feature-desc">创建和管理学习文章，支持难度分类，与单词关联，系统化学习。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">单词练习</h3>
+                    <p class="feature-desc">多种练习模式，包括拼写、释义测试，帮助您巩固记忆，提升学习效果。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📖</div>
+                    <h3 class="feature-title">文章阅读</h3>
+                    <p class="feature-desc">在阅读中学习，点击单词查看释义，收藏单词，记录阅读进度。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 行动号召 -->
+    <section class="cta">
+        <div class="container">
+            <h2 class="cta-title">准备好提升您的英语了吗？</h2>
+            <p class="cta-desc">立即开始使用 Word King，体验高效的单词学习方式，让英语学习变得更加轻松有趣。</p>
+            <a href="word-management.html" class="btn btn-primary btn-lg">立即开始</a>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Word King. 让英语学习更高效。</p>
+        </div>
+    </footer>
+</body>
+</html>
