@@ -143,6 +143,39 @@
             font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 8px;
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .question-word:hover {
+            opacity: 0.8;
+        }
+
+        .question-word .word-letter {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .question-word .word-letter.correct {
+            color: var(--success-color);
+            background-color: rgba(52, 199, 89, 0.1);
+        }
+
+        .question-word .word-letter.incorrect {
+            color: var(--danger-color);
+            background-color: rgba(255, 59, 48, 0.1);
+            animation: shake 0.3s ease;
+        }
+
+        .question-word .word-letter.active {
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
         }
 
         .question-phonetic {
@@ -162,6 +195,7 @@
             border-radius: var(--radius-md);
             text-align: center;
             transition: border-color 0.3s ease;
+            letter-spacing: 0.5em;
         }
 
         .answer-input:focus {
@@ -177,6 +211,52 @@
         .answer-input.incorrect {
             border-color: var(--danger-color);
             background-color: #FEE2E2;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .question-meaning {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-top: 12px;
+            font-weight: 500;
+        }
+
+        .question-phonetic-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .sound-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            color: var(--primary-color);
+        }
+
+        .sound-btn:hover {
+            background-color: var(--bg-tertiary);
+            transform: scale(1.1);
+        }
+
+        .sound-btn:active {
+            transform: scale(0.95);
         }
 
         .feedback-area {
@@ -322,6 +402,64 @@
             margin-right: auto;
         }
 
+        .pause-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .pause-content {
+            text-align: center;
+            color: var(--text-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100%;
+        }
+
+        .pause-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .pause-desc {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: var(--radius-full);
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
         @media (max-width: 768px) {
             .page-title {
                 font-size: 24px;
@@ -351,63 +489,36 @@
 </head>
 <body>
     <!-- 顶部导航栏 -->
-    <nav class="bg-primary">
+    <nav class="bg-primary" style="background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-light); position: sticky; top: 0; z-index: 100;">
         <div class="container">
             <div style="display: flex; justify-content: space-between; align-items: center; height: 70px;">
-                <div style="font-size: 24px; font-weight: 700; color: var(--primary-color);">
-                    <a href="index.html" style="text-decoration: none; color: inherit;">📚 Word King</a>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <img src="assets/logo.svg" alt="Word King Logo" style="width: 40px; height: 40px;">
+                    <a href="index.html" style="font-size: 24px; font-weight: 700; color: var(--primary-color); text-decoration: none;">Word King</a>
                 </div>
-                <div class="nav">
-                    <a href="word-management.html" class="nav-link">单词管理</a>
-                    <a href="article-management.html" class="nav-link">文章管理</a>
-                    <a href="word-practice.html" class="nav-link active">单词练习</a>
-                    <a href="article-reading.html" class="nav-link">文章阅读</a>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div class="nav">
+                        <a href="word-management.html" class="nav-link">单词管理</a>
+                        <a href="article-management.html" class="nav-link">文章管理</a>
+                        <a href="word-practice.html" class="nav-link active" onclick="startPractice(); return false;">单词练习</a>
+                        <a href="article-reading.html" class="nav-link">文章阅读</a>
+                    </div>
+                    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                        <svg width="20" height="20" id="themeIcon"><use href="assets/icons.svg#icon-moon"></use></svg>
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- 页面头部 -->
-    <header class="page-header">
-        <div class="container">
-            <h1 class="page-title">单词练习</h1>
-            <p class="page-subtitle">通过多种练习模式巩固您的单词记忆</p>
-        </div>
-    </header>
-
     <!-- 主内容区 -->
     <main class="main-content">
         <div class="container">
-            <!-- 练习模式选择 -->
-            <div class="practice-modes">
-                <div class="mode-card active" onclick="selectMode('spelling')">
-                    <div class="mode-icon">✍️</div>
-                    <h3 class="mode-title">拼写练习</h3>
-                    <p class="mode-desc">根据释义拼写单词</p>
+            <!-- 暂停蒙版 -->
+            <div class="pause-overlay" id="pauseArea" style="display: none;">
+                <div class="pause-content">
+                    <p class="pause-desc">按任意键继续练习</p>
                 </div>
-                <div class="mode-card" onclick="selectMode('meaning')">
-                    <div class="mode-icon">🎯</div>
-                    <h3 class="mode-title">释义测试</h3>
-                    <p class="mode-desc">选择正确的释义</p>
-                </div>
-                <div class="mode-card" onclick="selectMode('random')">
-                    <div class="mode-icon">🎲</div>
-                    <h3 class="mode-title">随机练习</h3>
-                    <p class="mode-desc">混合多种练习模式</p>
-                </div>
-                <div class="mode-card" onclick="selectMode('mistakes')">
-                    <div class="mode-icon">📝</div>
-                    <h3 class="mode-title">错题复习</h3>
-                    <p class="mode-desc">复习之前答错的单词</p>
-                </div>
-            </div>
-
-            <!-- 欢迎区域 -->
-            <div class="welcome-area" id="welcomeArea">
-                <div class="welcome-icon">🎓</div>
-                <h2 class="welcome-title">准备好开始练习了吗？</h2>
-                <p class="welcome-desc">选择一个练习模式，开始您的单词学习之旅。通过持续的练习，您将能够更轻松地掌握英语单词。</p>
-                <button class="btn btn-primary btn-lg" onclick="startPractice()">开始练习</button>
             </div>
 
             <!-- 练习区域 -->
@@ -420,28 +531,25 @@
                         </div>
                     </div>
                     <div class="score-display">
-                        <span>⭐</span>
-                        <span>得分: 80</span>
-                    </div>
-                </div>
+                                        <svg width="18" height="18"><use href="assets/icons.svg#icon-star"></use></svg>
+                                        <span>得分: 80</span>
+                                    </div>                </div>
 
                 <!-- 拼写练习模式 -->
                 <div id="spellingMode">
                     <div class="question-area">
                         <div class="question-label">请拼写以下单词</div>
-                        <div class="question-word">serendipity</div>
-                        <div class="question-phonetic">/ˌserənˈdɪpəti/</div>
-                    </div>
-                    <div class="answer-area">
-                        <input type="text" class="answer-input" placeholder="输入单词拼写...">
+                        <div class="question-word" id="currentWord" onclick="startPractice()">serendipity</div>
+                        <div class="question-phonetic-container">
+                            <button class="sound-btn" id="playSoundBtn" onclick="playWordSound()">
+                                <svg width="20" height="20"><use href="assets/icons.svg#icon-read"></use></svg>
+                            </button>
+                            <span class="question-phonetic" id="currentPhonetic">/ˌserənˈdɪpəti/</span>
+                        </div>
+                        <div class="question-meaning" id="currentMeaning">n. 意外发现珍奇事物的本领</div>
                     </div>
                     <div class="feedback-area" id="feedbackArea">
-                        <div class="feedback-text">回答正确！</div>
-                        <div class="feedback-detail">n. 意外发现珍奇事物的本领</div>
-                    </div>
-                    <div class="action-buttons">
-                        <button class="btn btn-outline" onclick="skipQuestion()">跳过</button>
-                        <button class="btn btn-primary" onclick="checkAnswer()">检查答案</button>
+                        <div class="feedback-text" id="feedbackText"></div>
                     </div>
                 </div>
 
@@ -498,8 +606,62 @@
     </main>
 
     <script>
+        // 单词数据
+        const wordList = [
+            { word: 'serendipity', phonetic: '/ˌserənˈdɪpəti/', meaning: 'n. 意外发现珍奇事物的本领' },
+            { word: 'epiphany', phonetic: '/ɪˈpɪfəni/', meaning: 'n. 顿悟；突然的领悟' },
+            { word: 'ubiquitous', phonetic: '/juːˈbɪkwɪtəs/', meaning: 'adj. 无所不在的' },
+            { word: 'ephemeral', phonetic: '/ɪˈfemərəl/', meaning: 'adj. 短暂的，转瞬即逝的' },
+            { word: 'serene', phonetic: '/səˈriːn/', meaning: 'adj. 宁静的，安详的' },
+            { word: 'resilient', phonetic: '/rɪˈzɪliənt/', meaning: 'adj. 有弹性的，能恢复的' },
+            { word: 'eloquent', phonetic: '/ˈeləkwənt/', meaning: 'adj. 雄辩的，有说服力的' },
+            { word: 'meticulous', phonetic: '/məˈtɪkjələs/', meaning: 'adj. 一丝不苟的，细致的' },
+            { word: 'pragmatic', phonetic: '/præɡˈmætɪk/', meaning: 'adj. 务实的，实用的' },
+            { word: 'ambiguous', phonetic: '/æmˈbɪɡjuəs/', meaning: 'adj. 模糊不清的，模棱两可的' }
+        ];
+
         let currentMode = 'spelling';
         let selectedOption = null;
+        let currentWordIndex = 0;
+        let score = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let mistakes = [];
+        let isPaused = false;
+        let isStarted = false;
+        let currentInput = '';
+        let isDarkMode = false;
+
+        // 初始化主题
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                isDarkMode = true;
+                document.documentElement.setAttribute('data-theme', 'dark');
+                updateThemeIcon();
+            }
+        }
+
+        // 切换主题
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            if (isDarkMode) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            }
+            updateThemeIcon();
+        }
+
+        // 更新主题图标
+        function updateThemeIcon() {
+            const themeIcon = document.getElementById('themeIcon');
+            if (themeIcon) {
+                themeIcon.innerHTML = `<use href="assets/icons.svg#${isDarkMode ? 'icon-sun' : 'icon-moon'}"></use>`;
+            }
+        }
 
         function selectMode(mode) {
             currentMode = mode;
@@ -510,9 +672,11 @@
         }
 
         function startPractice() {
-            document.getElementById('welcomeArea').style.display = 'none';
+            document.getElementById('pauseArea').style.display = 'none';
             document.getElementById('practiceArea').style.display = 'block';
             document.getElementById('statsArea').style.display = 'none';
+            isStarted = true;
+            isPaused = false;
 
             if (currentMode === 'meaning') {
                 document.getElementById('spellingMode').style.display = 'none';
@@ -520,24 +684,395 @@
             } else {
                 document.getElementById('spellingMode').style.display = 'block';
                 document.getElementById('meaningMode').style.display = 'none';
+                loadWord();
             }
+        }
+
+        function loadWord() {
+            const wordData = wordList[currentWordIndex];
+            const currentWordEl = document.getElementById('currentWord');
+
+            // 创建字母元素
+            currentWordEl.innerHTML = '';
+            for (let i = 0; i < wordData.word.length; i++) {
+                const letter = document.createElement('span');
+                letter.className = 'word-letter';
+                letter.textContent = wordData.word[i];
+                letter.dataset.index = i;
+                currentWordEl.appendChild(letter);
+            }
+
+            document.getElementById('currentPhonetic').textContent = wordData.phonetic;
+            document.getElementById('currentMeaning').textContent = wordData.meaning;
+
+            // 设置第一个字母为活动状态
+            const firstLetter = currentWordEl.querySelector('.word-letter');
+            if (firstLetter) {
+                firstLetter.classList.add('active');
+            }
+
+            // 重置输入
+            currentInput = '';
+
+            // 隐藏反馈
+            const feedback = document.getElementById('feedbackArea');
+            feedback.classList.remove('show', 'success', 'error');
+
+            // 更新进度
+            updateProgress();
+
+            // 默认播放发音
+            playWordSound();
+        }
+
+        function updateProgress() {
+            const progressText = document.querySelector('.progress-text');
+            const progressFill = document.querySelector('.progress-fill');
+            const scoreDisplay = document.querySelector('.score-display span:last-child');
+
+            progressText.textContent = `进度: ${currentWordIndex + 1}/${wordList.length}`;
+            progressFill.style.width = `${((currentWordIndex + 1) / wordList.length) * 100}%`;
+            scoreDisplay.textContent = `得分: ${score}`;
         }
 
         function checkAnswer() {
-            const input = document.querySelector('.answer-input');
             const feedback = document.getElementById('feedbackArea');
+            const feedbackText = document.getElementById('feedbackText');
+            const wordData = wordList[currentWordIndex];
+            const userInput = currentInput.toLowerCase();
+            const currentWordEl = document.getElementById('currentWord');
 
-            // 模拟检查答案
-            if (input.value.toLowerCase() === 'serendipity') {
-                input.classList.add('correct');
+            if (userInput === wordData.word.toLowerCase()) {
+                // 正确
                 feedback.classList.add('show', 'success');
-                feedback.querySelector('.feedback-text').textContent = '回答正确！';
+                feedbackText.textContent = '✓ 回答正确！';
+                score += 10;
+                correctCount++;
+
+                // 更新字母显示
+                const letters = currentWordEl.querySelectorAll('.word-letter');
+                letters.forEach((letter, index) => {
+                    letter.classList.add('correct');
+                    letter.classList.remove('active');
+                });
+
+                // 延迟后进入下一个单词
+                setTimeout(() => {
+                    nextWord();
+                }, 1000);
             } else {
-                input.classList.add('incorrect');
+                // 错误 - 清空重新输入
                 feedback.classList.add('show', 'error');
-                feedback.querySelector('.feedback-text').textContent = '回答错误';
+                feedbackText.textContent = '✗ 拼写错误，请重试';
+
+                // 震动效果
+                const letters = currentWordEl.querySelectorAll('.word-letter');
+                letters.forEach((letter, index) => {
+                    if (index < currentInput.length) {
+                        if (currentInput[index] === wordData.word[index]) {
+                            letter.classList.add('correct');
+                        } else {
+                            letter.classList.add('incorrect');
+                        }
+                    }
+                });
+
+                // 记录错误
+                mistakes.push({
+                    word: wordData.word,
+                    userInput: userInput,
+                    index: currentWordIndex
+                });
+
+                // 清空输入
+                setTimeout(() => {
+                    currentInput = '';
+                    const letters = currentWordEl.querySelectorAll('.word-letter');
+                    letters.forEach(letter => {
+                        letter.classList.remove('incorrect', 'correct');
+                    });
+                    // 重新设置第一个字母为活动状态
+                    const firstLetter = currentWordEl.querySelector('.word-letter');
+                    if (firstLetter) {
+                        firstLetter.classList.add('active');
+                    }
+                    feedback.classList.remove('show', 'error');
+                }, 800);
             }
         }
+
+        function nextWord() {
+            currentWordIndex++;
+            if (currentWordIndex >= wordList.length) {
+                showStats();
+            } else {
+                loadWord();
+            }
+        }
+
+        function playWordSound() {
+            const wordData = wordList[currentWordIndex];
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(wordData.word);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function showStats() {
+            document.getElementById('practiceArea').style.display = 'none';
+            document.getElementById('statsArea').style.display = 'block';
+
+            const correctRate = wordList.length > 0 ? Math.round((correctCount / wordList.length) * 100) : 0;
+
+            document.querySelector('.stat-item:nth-child(1) .stat-value').textContent = correctCount;
+            document.querySelector('.stat-item:nth-child(2) .stat-value').textContent = mistakes.length;
+            document.querySelector('.stat-item:nth-child(3) .stat-value').textContent = correctRate + '%';
+            document.querySelector('.stat-item:nth-child(4) .stat-value').textContent = score;
+        }
+
+        function reviewMistakes() {
+            if (mistakes.length === 0) {
+                alert('没有错题，太棒了！');
+                return;
+            }
+
+            let mistakesText = '错题列表：\n\n';
+            mistakes.forEach((mistake, index) => {
+                mistakesText += `${index + 1}. ${mistake.word} (你的回答: ${mistake.userInput})\n`;
+            });
+            alert(mistakesText);
+        }
+
+        function restartPractice() {
+            currentWordIndex = 0;
+            score = 0;
+            correctCount = 0;
+            mistakes = [];
+            isStarted = false;
+            isPaused = false;
+            currentInput = '';
+
+            document.getElementById('pauseArea').style.display = 'none';
+            document.getElementById('practiceArea').style.display = 'none';
+            document.getElementById('statsArea').style.display = 'none';
+
+            document.getElementById('feedbackArea').classList.remove('show', 'success', 'error');
+            document.getElementById('feedbackArea2').classList.remove('show', 'success', 'error');
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected', 'correct', 'incorrect');
+            });
+            selectedOption = null;
+        }
+
+        // 监听键盘事件
+
+                document.addEventListener('DOMContentLoaded', function() {
+
+                    // 初始化主题
+
+                    initTheme();
+
+        
+
+                    // 页面加载时自动开始练习
+
+                    setTimeout(() => {
+
+                        startPractice();
+
+                    }, 500);
+
+        
+
+                    // 监听键盘输入
+
+                    document.addEventListener('keydown', function(e) {
+
+                        // 如果在暂停页面，按任意键继续
+
+                        if (document.getElementById('pauseArea').style.display !== 'none' &&
+
+                            !e.ctrlKey && !e.altKey && !e.metaKey) {
+
+                            document.getElementById('pauseArea').style.display = 'none';
+
+                            document.getElementById('practiceArea').style.display = 'block';
+
+                            isPaused = false;
+
+                            e.preventDefault();
+
+                        }
+
+                        // 如果正在练习，监听字母输入
+
+                        else if (isStarted && !isPaused && currentMode === 'spelling') {
+
+                            const wordData = wordList[currentWordIndex];
+
+                            const currentWordEl = document.getElementById('currentWord');
+
+                            const letters = currentWordEl.querySelectorAll('.word-letter');
+
+        
+
+                            // 处理字母输入
+
+                            if (e.key.length === 1 && e.key.match(/[a-zA-Z]/)) {
+
+                                e.preventDefault();
+
+                                const currentIndex = currentInput.length;
+
+        
+
+                                if (currentIndex < wordData.word.length) {
+
+                                    currentInput += e.key.toLowerCase();
+
+                                    const inputChar = currentInput[currentIndex];
+
+                                    const targetChar = wordData.word[currentIndex].toLowerCase();
+
+        
+
+                                    // 检查字母是否正确
+
+                                    if (inputChar === targetChar) {
+
+                                        letters[currentIndex].classList.add('correct');
+
+                                    } else {
+
+                                        letters[currentIndex].classList.add('incorrect');
+
+                                    }
+
+        
+
+                                    // 移除当前活动状态
+
+                                    letters.forEach(letter => letter.classList.remove('active'));
+
+        
+
+                                    // 设置下一个字母为活动状态
+
+                                    if (currentIndex + 1 < wordData.word.length) {
+
+                                        letters[currentIndex + 1].classList.add('active');
+
+                                    }
+
+        
+
+                                    // 检查是否完成输入
+
+                                    if (currentInput.length === wordData.word.length) {
+
+                                        checkAnswer();
+
+                                    }
+
+                                }
+
+                            }
+
+                            // 处理退格键
+
+                            else if (e.key === 'Backspace') {
+
+                                e.preventDefault();
+
+                                if (currentInput.length > 0) {
+
+                                    currentInput = currentInput.slice(0, -1);
+
+                                    const currentIndex = currentInput.length;
+
+                                    letters[currentIndex].classList.remove('incorrect', 'correct');
+
+        
+
+                                    // 移除当前活动状态
+
+                                    letters.forEach(letter => letter.classList.remove('active'));
+
+        
+
+                                    // 设置当前字母为活动状态
+
+                                    letters[currentIndex].classList.add('active');
+
+                                }
+
+                            }
+
+                        }
+
+                    });
+
+        
+
+                    // 监听页面可见性变化（浏览器切换/最小化）
+
+                    document.addEventListener('visibilitychange', function() {
+
+                        if (document.hidden && isStarted && !isPaused) {
+
+                            // 页面隐藏，暂停练习
+
+                            isPaused = true;
+
+                            document.getElementById('practiceArea').style.display = 'none';
+
+                            document.getElementById('pauseArea').style.display = 'block';
+
+                        } else if (!document.hidden && isPaused) {
+
+                            // 页面显示，显示暂停提示
+
+                            document.getElementById('pauseArea').style.display = 'block';
+
+                        }
+
+                    });
+
+        
+
+                    // 监听窗口失去焦点
+
+                    window.addEventListener('blur', function() {
+
+                        if (isStarted && !isPaused) {
+
+                            isPaused = true;
+
+                            document.getElementById('practiceArea').style.display = 'none';
+
+                            document.getElementById('pauseArea').style.display = 'block';
+
+                        }
+
+                    });
+
+        
+
+                    // 监听窗口获得焦点
+
+                    window.addEventListener('focus', function() {
+
+                        if (isPaused) {
+
+                            document.getElementById('pauseArea').style.display = 'block';
+
+                        }
+
+                    });
+
+                });
 
         function selectOption(btn) {
             document.querySelectorAll('.option-btn').forEach(b => {
@@ -562,31 +1097,6 @@
                     feedback.querySelector('.feedback-text').textContent = '回答错误';
                 }
             }
-        }
-
-        function skipQuestion() {
-            // 跳过当前题目
-            alert('已跳过当前题目');
-        }
-
-        function reviewMistakes() {
-            alert('查看错题功能');
-        }
-
-        function restartPractice() {
-            document.getElementById('welcomeArea').style.display = 'block';
-            document.getElementById('practiceArea').style.display = 'none';
-            document.getElementById('statsArea').style.display = 'none';
-
-            // 重置状态
-            document.querySelector('.answer-input').value = '';
-            document.querySelector('.answer-input').classList.remove('correct', 'incorrect');
-            document.getElementById('feedbackArea').classList.remove('show', 'success', 'error');
-            document.getElementById('feedbackArea2').classList.remove('show', 'success', 'error');
-            document.querySelectorAll('.option-btn').forEach(btn => {
-                btn.classList.remove('selected', 'correct', 'incorrect');
-            });
-            selectedOption = null;
         }
     </script>
 </body>

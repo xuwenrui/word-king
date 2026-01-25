@@ -312,11 +312,12 @@
 </head>
 <body>
     <!-- 顶部导航栏 -->
-    <nav class="bg-primary">
+    <nav class="bg-primary" style="background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-light); position: sticky; top: 0; z-index: 100;">
         <div class="container">
             <div style="display: flex; justify-content: space-between; align-items: center; height: 70px;">
-                <div style="font-size: 24px; font-weight: 700; color: var(--primary-color);">
-                    <a href="index.html" style="text-decoration: none; color: inherit;">📚 Word King</a>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <img src="assets/logo.svg" alt="Word King Logo" style="width: 40px; height: 40px;">
+                    <a href="index.html" style="font-size: 24px; font-weight: 700; color: var(--primary-color); text-decoration: none;">Word King</a>
                 </div>
                 <div class="nav">
                     <a href="word-management.html" class="nav-link">单词管理</a>
@@ -356,19 +357,19 @@
                     <h2 class="article-title">The Benefits of Reading</h2>
                     <div class="article-meta">
                         <div class="meta-item">
-                            <span>📅</span>
+                            <svg width="14" height="14"><use href="assets/icons.svg#icon-calendar"></use></svg>
                             <span>2026-01-20</span>
                         </div>
                         <div class="meta-item">
-                            <span>📝</span>
+                            <svg width="14" height="14"><use href="assets/icons.svg#icon-word-count"></use></svg>
                             <span>245 词</span>
                         </div>
                         <div class="meta-item">
-                            <span>⏱️</span>
+                            <svg width="14" height="14"><use href="assets/icons.svg#icon-clock"></use></svg>
                             <span>约 3 分钟</span>
                         </div>
                         <div class="meta-item">
-                            <span>📊</span>
+                            <svg width="14" height="14"><use href="assets/icons.svg#icon-difficulty"></use></svg>
                             <span>中等难度</span>
                         </div>
                     </div>
@@ -418,9 +419,18 @@
 
                 <!-- 文章操作按钮 -->
                 <div class="article-actions">
-                    <button class="btn btn-outline" onclick="toggleSidebar()">📚 收藏的单词 (3)</button>
-                    <button class="btn btn-outline">❤️ 收藏文章</button>
-                    <button class="btn btn-outline">📤 分享</button>
+                    <button class="btn btn-outline" onclick="toggleSidebar()">
+                        <svg width="16" height="16"><use href="assets/icons.svg#icon-book"></use></svg>
+                        收藏的单词 (3)
+                    </button>
+                    <button class="btn btn-outline">
+                        <svg width="16" height="16"><use href="assets/icons.svg#icon-heart"></use></svg>
+                        收藏文章
+                    </button>
+                    <button class="btn btn-outline">
+                        <svg width="16" height="16"><use href="assets/icons.svg#icon-share"></use></svg>
+                        分享
+                    </button>
                     <a href="article-management.html" class="btn btn-primary">返回文章列表</a>
                 </div>
             </div>

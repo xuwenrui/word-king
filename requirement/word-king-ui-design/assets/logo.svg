@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- 背景圆形 -->
+  <circle cx="100" cy="100" r="95" fill="#0071E3"/>
+  
+  <!-- 书本图标 -->
+  <g transform="translate(50, 55)">
+    <!-- 左页 -->
+    <path d="M5 10 L5 80 C5 85 10 90 20 90 L45 90 L45 20 C45 15 40 10 30 10 L5 10Z" fill="#FFFFFF"/>
+    <path d="M5 10 L30 10" stroke="#0071E3" stroke-width="2"/>
+    <path d="M45 20 L45 90 L70 90 C80 90 85 85 85 80 L85 10 L60 10 C50 10 45 15 45 20Z" fill="#FFFFFF"/>
+    
+    <!-- 书脊 -->
+    <path d="M45 20 L45 90" stroke="#0071E3" stroke-width="2"/>
+    
+    <!-- 书本页纹 -->
+    <path d="M12 25 L38 25" stroke="#E5E5EA" stroke-width="2" stroke-linecap="round"/>
+    <path d="M12 35 L38 35" stroke="#E5E5EA" stroke-width="2" stroke-linecap="round"/>
+    <path d="M12 45 L30 45" stroke="#E5E5EA" stroke-width="2" stroke-linecap="round"/>
+    
+    <path d="M52 25 L78 25" stroke="#E5E5EA" stroke-width="2" stroke-linecap="round"/>
+    <path d="M52 35 L78 35" stroke="#E5E5EA" stroke-width="2" stroke-linecap="round"/>
+    <path d="M52 45 L70 45" stroke="#E5E5EA" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  
+  <!-- 皇冠（代表King） -->
+  <g transform="translate(85, 40)">
+    <path d="M15 0 L15 30 L0 15 L5 35 L15 25 L25 35 L30 15 L15 30 L15 0Z" fill="#FFD700"/>
+    <circle cx="15" cy="5" r="3" fill="#FFA500"/>
+    <circle cx="2" cy="15" r="2" fill="#FFA500"/>
+    <circle cx="28" cy="15" r="2" fill="#FFA500"/>
+  </g>
+</svg>
