@@ -319,15 +319,17 @@
                     <img src="assets/logo.svg" alt="Word King Logo" style="width: 40px; height: 40px;">
                     <a href="index.html" style="font-size: 24px; font-weight: 700; color: var(--primary-color); text-decoration: none;">Word King</a>
                 </div>
-                <div class="nav">
-                    <a href="word-management.html" class="nav-link">单词管理</a>
-                    <a href="article-management.html" class="nav-link">文章管理</a>
-                    <a href="word-practice.html" class="nav-link">单词练习</a>
-                    <a href="article-reading.html" class="nav-link active">文章阅读</a>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                    <div class="nav">
+                        <a href="word-management.html" class="nav-link">单词管理</a>
+                        <a href="article-management.html" class="nav-link">文章管理</a>
+                        <a href="word-practice.html" class="nav-link">单词练习</a>
+                        <a href="article-reading.html" class="nav-link active">文章阅读</a>
+                    </div>
+                    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                        <svg width="20" height="20" id="themeIcon"><use href="assets/icons.svg#icon-moon"></use></svg>
+                    </button>
                 </div>
-                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
-                    <svg width="20" height="20" id="themeIcon"><use href="assets/icons.svg#icon-moon"></use></svg>
-                </button>
             </div>
         </div>
     </nav>

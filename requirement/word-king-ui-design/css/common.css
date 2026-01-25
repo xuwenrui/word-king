@@ -100,6 +100,16 @@
     --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.7);
 }
 
+/* 暗色模式下的导航栏样式 */
+[data-theme="dark"] nav[style*="background-color: rgba(255, 255, 255, 0.8)"] {
+    background-color: rgba(28, 28, 30, 0.8) !important;
+    border-bottom-color: var(--border-light) !important;
+}
+
+[data-theme="dark"] nav a[style*="color: var(--primary-color)"] {
+    color: var(--text-primary) !important;
+}
+
 /* 重置样式 */
 * {
     margin: 0;
