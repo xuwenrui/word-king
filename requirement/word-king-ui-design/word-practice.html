@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>单词练习 - Word King</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
     <link rel="stylesheet" href="css/common.css">
     <style>
         body {
@@ -533,7 +534,7 @@
             </div>
 
             <!-- 练习区域 -->
-            <div class="practice-area" id="practiceArea" style="display: none;">
+            <div class="practice-area" id="practiceArea">
                 <div class="practice-header">
                     <div class="practice-progress">
                         <span class="progress-text">进度: 1/10</span>
@@ -667,7 +668,6 @@
 
         function startPractice() {
             document.getElementById('pauseArea').style.display = 'none';
-            document.getElementById('practiceArea').style.display = 'block';
             document.getElementById('statsArea').style.display = 'none';
             isStarted = true;
             isPaused = false;
@@ -815,7 +815,8 @@
         }
 
         function showStats() {
-            document.getElementById('practiceArea').style.display = 'none';
+            document.getElementById('spellingMode').style.display = 'none';
+            document.getElementById('meaningMode').style.display = 'none';
             document.getElementById('statsArea').style.display = 'block';
 
             const correctRate = wordList.length > 0 ? Math.round((correctCount / wordList.length) * 100) : 0;
@@ -849,7 +850,8 @@
             currentInput = '';
 
             document.getElementById('pauseArea').style.display = 'none';
-            document.getElementById('practiceArea').style.display = 'none';
+            document.getElementById('spellingMode').style.display = 'none';
+            document.getElementById('meaningMode').style.display = 'none';
             document.getElementById('statsArea').style.display = 'none';
 
             document.getElementById('feedbackArea').classList.remove('show', 'success', 'error');
@@ -909,7 +911,8 @@
 
                             document.getElementById('pauseArea').style.display = 'none';
 
-                            document.getElementById('practiceArea').style.display = 'block';
+                            document.getElementById('spellingMode').style.display = 'block';
+                            document.getElementById('meaningMode').style.display = 'none';
 
                             isPaused = false;
 
@@ -1037,7 +1040,8 @@
 
                             isPaused = true;
 
-                            document.getElementById('practiceArea').style.display = 'none';
+                            document.getElementById('spellingMode').style.display = 'none';
+                            document.getElementById('meaningMode').style.display = 'none';
 
                             document.getElementById('pauseArea').style.display = 'block';
 
@@ -1061,7 +1065,8 @@
 
                             isPaused = true;
 
-                            document.getElementById('practiceArea').style.display = 'none';
+                            document.getElementById('spellingMode').style.display = 'none';
+                            document.getElementById('meaningMode').style.display = 'none';
 
                             document.getElementById('pauseArea').style.display = 'block';
 
