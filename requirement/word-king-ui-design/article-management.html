@@ -253,14 +253,6 @@
         </div>
     </nav>
 
-    <!-- 页面头部 -->
-    <header class="page-header">
-        <div class="container">
-            <h1 class="page-title">文章管理</h1>
-            <p class="page-subtitle">创建、编辑和管理您的学习文章</p>
-        </div>
-    </header>
-
     <!-- 主内容区 -->
     <main class="main-content">
         <div class="container">
@@ -271,14 +263,11 @@
                     <input type="text" class="search-input" placeholder="搜索文章...">
                 </div>
                 <select class="filter-select">
-                    <option value="all">全部分类</option>
+                    <option value="all">全部标签</option>
                     <option value="news">新闻</option>
                     <option value="story">故事</option>
                     <option value="essay">散文</option>
                     <option value="science">科普</option>
-                </select>
-                <select class="filter-select">
-                    <option value="all">全部难度</option>
                     <option value="easy">简单</option>
                     <option value="medium">中等</option>
                     <option value="hard">困难</option>
@@ -297,8 +286,8 @@
                         <div>
                             <h3 class="article-title">The Benefits of Reading</h3>
                             <div class="article-tags">
-                                <span class="tag tag-primary">散文</span>
-                                <span class="difficulty-badge difficulty-medium">中等</span>
+                                <span class="tag">散文</span>
+                                <span class="tag">中等</span>
                             </div>
                         </div>
                         <div class="article-actions">
@@ -334,8 +323,8 @@
                         <div>
                             <h3 class="article-title">A Journey Through Time</h3>
                             <div class="article-tags">
-                                <span class="tag tag-success">故事</span>
-                                <span class="difficulty-badge difficulty-easy">简单</span>
+                                <span class="tag">故事</span>
+                                <span class="tag">简单</span>
                             </div>
                         </div>
                         <div class="article-actions">
@@ -371,8 +360,8 @@
                         <div>
                             <h3 class="article-title">The Science of Sleep</h3>
                             <div class="article-tags">
-                                <span class="tag tag-warning">科普</span>
-                                <span class="difficulty-badge difficulty-hard">困难</span>
+                                <span class="tag">科普</span>
+                                <span class="tag">困难</span>
                             </div>
                         </div>
                         <div class="article-actions">
@@ -409,7 +398,7 @@
                             <h3 class="article-title">Technology in Modern Life</h3>
                             <div class="article-tags">
                                 <span class="tag">新闻</span>
-                                <span class="difficulty-badge difficulty-medium">中等</span>
+                                <span class="tag">中等</span>
                             </div>
                         </div>
                         <div class="article-actions">
@@ -455,34 +444,17 @@
                     <input type="text" class="form-input" placeholder="请输入文章标题">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">文章分类 *</label>
-                    <select class="form-select">
-                        <option value="news">新闻</option>
-                        <option value="story">故事</option>
-                        <option value="essay">散文</option>
-                        <option value="science">科普</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">难度等级 *</label>
-                    <select class="form-select">
-                        <option value="easy">简单</option>
-                        <option value="medium">中等</option>
-                        <option value="hard">困难</option>
-                    </select>
-                </div>
-                <div class="form-group">
                     <label class="form-label">文章内容 *</label>
                     <textarea class="form-textarea" style="min-height: 300px;" placeholder="请输入文章内容"></textarea>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">关联单词标签</label>
-                    <input type="text" class="form-input" placeholder="用逗号分隔单词标签">
+                    <label class="form-label">标签 (用逗号分隔)</label>
+                    <input type="text" class="form-input" placeholder="例如：新闻,中等难度,科普">
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline" onclick="closeModal()">取消</button>
-                <button class="btn btn-primary">保存</button>
+                <button class="btn btn-primary" onclick="saveArticle()">保存</button>
             </div>
         </div>
     </div>
@@ -490,10 +462,79 @@
     <script>
         function openModal() {
             document.getElementById('articleModal').classList.add('active');
+            // 重置输入框
+            document.querySelector('.modal-body .form-input[placeholder="请输入文章标题"]').value = '';
+            document.querySelector('.modal-body .form-textarea[placeholder="请输入文章内容"]').value = '';
+            document.querySelector('.modal-body .form-input[placeholder="例如：新闻,中等难度,科普"]').value = '';
         }
 
         function closeModal() {
             document.getElementById('articleModal').classList.remove('active');
+        }
+
+        // 保存文章
+        function saveArticle() {
+            const titleInput = document.querySelector('.modal-body .form-input[placeholder="请输入文章标题"]');
+            const contentInput = document.querySelector('.modal-body .form-textarea[placeholder="请输入文章内容"]');
+            const tagsInput = document.querySelector('.modal-body .form-input[placeholder="例如：新闻,中等难度,科普"]');
+            
+            // 验证必填字段
+            if (!titleInput.value || !contentInput.value) {
+                alert('请填写必填字段：文章标题和文章内容');
+                return;
+            }
+            
+            // 从标签输入中提取标签
+            let tags = [];
+            if (tagsInput && tagsInput.value) {
+                tags = tagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag);
+            }
+            
+            // 创建新文章项
+            const newArticleItem = document.createElement('div');
+            newArticleItem.className = 'article-item';
+            
+            // 创建标签HTML
+            const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+            
+            newArticleItem.innerHTML = `
+                <div class="article-header">
+                    <div>
+                        <h3 class="article-title">${titleInput.value}</h3>
+                        <div class="article-tags">
+                            ${tagsHtml}
+                        </div>
+                    </div>
+                    <div class="article-actions">
+                        <button class="btn btn-sm btn-outline">编辑</button>
+                        <button class="btn btn-sm btn-danger">删除</button>
+                    </div>
+                </div>
+                <p class="article-excerpt">${contentInput.value.length > 150 ? contentInput.value.substring(0, 150) + '...' : contentInput.value}</p>
+                <div class="article-footer">
+                    <div class="article-meta">
+                        <div class="article-meta-item">
+                            <svg width="14" height="14"><use href="assets/icons.svg#icon-calendar"></use></svg>
+                            <span>${new Date().toISOString().split('T')[0]}</span>
+                        </div>
+                        <div class="article-meta-item">
+                            <svg width="14" height="14"><use href="assets/icons.svg#icon-word-count"></use></svg>
+                            <span>${contentInput.value.split(' ').length} 词</span>
+                        </div>
+                        <div class="article-meta-item">
+                            <svg width="14" height="14"><use href="assets/icons.svg#icon-tag"></use></svg>
+                            <span>${tags.length} 个标签</span>
+                        </div>
+                    </div>
+                    <a href="article-reading.html" class="btn btn-sm btn-primary">阅读文章</a>
+                </div>
+            `;
+            
+            // 添加到文章列表
+            document.querySelector('.article-list').prepend(newArticleItem);
+            
+            // 关闭模态框
+            closeModal();
         }
 
         // 点击模态框外部关闭

@@ -178,6 +178,13 @@
             margin-left: 8px;
         }
 
+        /* 重写模态框样式，防止出现滚动条 */
+        #wordModal .modal-content {
+            max-height: unset;
+            height: auto;
+            overflow: visible;
+        }
+
         .empty-state {
             text-align: center;
             padding: 80px 20px;
