@@ -129,6 +129,11 @@ body {
     background-color: var(--bg-secondary);
 }
 
+/* 确保页面跳转时滚动条不导致布局跳动 */
+html {
+    margin-left: calc(100vw - 100%);
+}
+
 /* 通用类 */
 .container {
     max-width: 1200px;

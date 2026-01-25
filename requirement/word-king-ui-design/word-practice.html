@@ -860,6 +860,11 @@
                 btn.classList.remove('selected', 'correct', 'incorrect');
             });
             selectedOption = null;
+
+            // 重新开始练习
+            setTimeout(() => {
+                startPractice();
+            }, 300);
         }
 
         // 监听键盘事件
