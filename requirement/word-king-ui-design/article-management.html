@@ -48,12 +48,18 @@
             font-size: 16px;
             border: 2px solid var(--border-color);
             border-radius: var(--radius-md);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             transition: border-color 0.3s ease;
         }
 
         .search-input:focus {
             outline: none;
             border-color: var(--primary-color);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-light);
         }
 
         .search-icon {
@@ -71,8 +77,18 @@
             border: 2px solid var(--border-color);
             border-radius: var(--radius-md);
             background-color: var(--bg-primary);
+            color: var(--text-primary);
             cursor: pointer;
             min-width: 150px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23A1A1A6' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        [data-theme="dark"] .filter-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236E6E73' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
         }
 
         .article-list {
