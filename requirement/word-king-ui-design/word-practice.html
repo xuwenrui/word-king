@@ -6,6 +6,10 @@
     <title>单词练习 - Word King</title>
     <link rel="stylesheet" href="css/common.css">
     <style>
+        body {
+            overflow: hidden;
+        }
+
         .page-header {
             background-color: var(--bg-primary);
             padding: 32px 20px;
@@ -25,7 +29,8 @@
         }
 
         .main-content {
-            padding: 32px 20px;
+            padding: 0;
+            overflow: hidden;
         }
 
         .practice-modes {
@@ -75,11 +80,13 @@
 
         .practice-area {
             background-color: var(--bg-primary);
-            border-radius: var(--radius-lg);
-            padding: 40px;
-            box-shadow: var(--shadow-md);
-            max-width: 800px;
-            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
 
         .practice-header {
@@ -144,7 +151,7 @@
             color: var(--text-primary);
             margin-bottom: 8px;
             display: flex;
-            gap: 6px;
+            gap: 0;
             justify-content: center;
             flex-wrap: wrap;
             cursor: pointer;
@@ -157,9 +164,9 @@
 
         .question-word .word-letter {
             display: inline-block;
-            padding: 4px 8px;
-            border-radius: var(--radius-sm);
+            padding: 0;
             transition: all 0.2s ease;
+            color: var(--text-primary);
         }
 
         .question-word .word-letter.correct {
@@ -175,7 +182,6 @@
 
         .question-word .word-letter.active {
             color: var(--primary-color);
-            border: 2px solid var(--primary-color);
         }
 
         .question-phonetic {
@@ -404,11 +410,11 @@
 
         .pause-overlay {
             position: fixed;
-            top: 0;
+            top: 70px;
             left: 0;
             width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.3);
+            height: calc(100% - 70px);
+            background-color: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             display: flex;
@@ -538,11 +544,10 @@
                 <!-- 拼写练习模式 -->
                 <div id="spellingMode">
                     <div class="question-area">
-                        <div class="question-label">请拼写以下单词</div>
                         <div class="question-word" id="currentWord" onclick="startPractice()">serendipity</div>
                         <div class="question-phonetic-container">
                             <button class="sound-btn" id="playSoundBtn" onclick="playWordSound()">
-                                <svg width="20" height="20"><use href="assets/icons.svg#icon-read"></use></svg>
+                                <svg width="20" height="20"><use href="assets/icons.svg#icon-speaker"></use></svg>
                             </button>
                             <span class="question-phonetic" id="currentPhonetic">/ˌserənˈdɪpəti/</span>
                         </div>
@@ -784,12 +789,12 @@
                     index: currentWordIndex
                 });
 
-                // 清空输入
+                // 清空输入，从第一个字母重新输入
                 setTimeout(() => {
                     currentInput = '';
                     const letters = currentWordEl.querySelectorAll('.word-letter');
                     letters.forEach(letter => {
-                        letter.classList.remove('incorrect', 'correct');
+                        letter.classList.remove('incorrect', 'correct', 'active');
                     });
                     // 重新设置第一个字母为活动状态
                     const firstLetter = currentWordEl.querySelector('.word-letter');
@@ -797,7 +802,7 @@
                         firstLetter.classList.add('active');
                     }
                     feedback.classList.remove('show', 'error');
-                }, 800);
+                }, 500);
             }
         }
 
