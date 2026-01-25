@@ -223,14 +223,6 @@
         </div>
     </nav>
 
-    <!-- 页面头部 -->
-    <header class="page-header">
-        <div class="container">
-            <h1 class="page-title">单词管理</h1>
-            <p class="page-subtitle">添加、编辑和管理您的单词和短语</p>
-        </div>
-    </header>
-
     <!-- 主内容区 -->
     <main class="main-content">
         <div class="container">
@@ -246,10 +238,13 @@
                     <option value="phrase">短语</option>
                 </select>
                 <select class="filter-select">
-                    <option value="all">全部分类</option>
+                    <option value="all">全部标签</option>
                     <option value="daily">日常用语</option>
                     <option value="business">商务英语</option>
                     <option value="academic">学术词汇</option>
+                    <option value="beginner">初级</option>
+                    <option value="intermediate">中级</option>
+                    <option value="advanced">高级</option>
                 </select>
                 <button class="btn btn-primary" onclick="openModal()">
                     <svg width="18" height="18"><use href="assets/icons.svg#icon-add"></use></svg>
@@ -275,7 +270,7 @@
                     <div class="word-example">The discovery of penicillin was a happy case of serendipity.</div>
                     <div class="word-footer">
                         <div class="word-tags">
-                            <span class="tag tag-primary">学术词汇</span>
+                            <span class="tag">学术词汇</span>
                             <span class="tag">高级</span>
                         </div>
                         <div class="word-meta">创建于 2026-01-20</div>
@@ -298,7 +293,7 @@
                     <div class="word-example">Break a leg! I know you'll do great tonight.</div>
                     <div class="word-footer">
                         <div class="word-tags">
-                            <span class="tag tag-warning">日常用语</span>
+                            <span class="tag">日常用语</span>
                             <span class="tag">中级</span>
                         </div>
                         <div class="word-meta">创建于 2026-01-22</div>
@@ -321,7 +316,7 @@
                     <div class="word-example">She had an epiphany about her career path.</div>
                     <div class="word-footer">
                         <div class="word-tags">
-                            <span class="tag tag-primary">学术词汇</span>
+                            <span class="tag">学术词汇</span>
                             <span class="tag">高级</span>
                         </div>
                         <div class="word-meta">创建于 2026-01-23</div>
@@ -344,7 +339,7 @@
                     <div class="word-example">That test was a piece of cake!</div>
                     <div class="word-footer">
                         <div class="word-tags">
-                            <span class="tag tag-warning">日常用语</span>
+                            <span class="tag">日常用语</span>
                             <span class="tag">初级</span>
                         </div>
                         <div class="word-meta">创建于 2026-01-24</div>
@@ -363,48 +358,36 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label class="form-label">类型</label>
-                    <select class="form-select">
+                    <label class="form-label">单词/短语 *</label>
+                    <input type="text" class="form-input" placeholder="请输入单词或短语" id="wordInput" onchange="updateWordType()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">类型 (自动识别)</label>
+                    <select class="form-select" id="wordTypeSelect" disabled>
                         <option value="word">单词</option>
                         <option value="phrase">短语</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">单词/短语 *</label>
-                    <input type="text" class="form-input" placeholder="请输入单词或短语">
-                </div>
-                <div class="form-group">
                     <label class="form-label">音标</label>
-                    <input type="text" class="form-input" placeholder="例如：/ˈhæpi/">
+                    <input type="text" class="form-input" placeholder="例如：/ˈhæpi/" id="phoneticInput">
                 </div>
                 <div class="form-group">
                     <label class="form-label">中文释义 *</label>
-                    <input type="text" class="form-input" placeholder="请输入中文释义">
+                    <input type="text" class="form-input" placeholder="请输入中文释义" id="chineseInput">
                 </div>
                 <div class="form-group">
                     <label class="form-label">例句</label>
-                    <textarea class="form-textarea" placeholder="请输入例句"></textarea>
+                    <textarea class="form-textarea" placeholder="请输入例句" id="exampleInput"></textarea>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">分类</label>
-                    <select class="form-select">
-                        <option value="daily">日常用语</option>
-                        <option value="business">商务英语</option>
-                        <option value="academic">学术词汇</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">难度</label>
-                    <select class="form-select">
-                        <option value="beginner">初级</option>
-                        <option value="intermediate">中级</option>
-                        <option value="advanced">高级</option>
-                    </select>
+                    <label class="form-label">标签 (用逗号分隔)</label>
+                    <input type="text" class="form-input" placeholder="例如：日常用语,初级" id="tagsInput">
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline" onclick="closeModal()">取消</button>
-                <button class="btn btn-primary">保存</button>
+                <button class="btn btn-primary" onclick="saveWord()">保存</button>
             </div>
         </div>
     </div>
@@ -412,10 +395,88 @@
     <script>
         function openModal() {
             document.getElementById('wordModal').classList.add('active');
+            // 重置输入框和类型选择
+            document.getElementById('wordInput').value = '';
+            document.getElementById('phoneticInput').value = '';
+            document.getElementById('chineseInput').value = '';
+            document.getElementById('exampleInput').value = '';
+            document.getElementById('tagsInput').value = '';
+            document.getElementById('wordTypeSelect').value = 'word';
         }
 
         function closeModal() {
             document.getElementById('wordModal').classList.remove('active');
+        }
+
+        // 自动识别单词/短语类型
+        function updateWordType() {
+            const wordInput = document.getElementById('wordInput');
+            const wordTypeSelect = document.getElementById('wordTypeSelect');
+            
+            if (wordInput.value && wordInput.value.includes(' ')) {
+                wordTypeSelect.value = 'phrase';
+            } else {
+                wordTypeSelect.value = 'word';
+            }
+        }
+
+        // 保存单词
+        function saveWord() {
+            const wordInput = document.getElementById('wordInput');
+            const wordTypeSelect = document.getElementById('wordTypeSelect');
+            const phoneticInput = document.getElementById('phoneticInput');
+            const chineseInput = document.getElementById('chineseInput');
+            const exampleInput = document.getElementById('exampleInput');
+            const tagsInput = document.getElementById('tagsInput');
+            
+            // 验证必填字段
+            if (!wordInput.value || !chineseInput.value) {
+                alert('请填写必填字段：单词/短语和中文释义');
+                return;
+            }
+            
+            // 从标签输入中提取标签
+            let tags = [];
+            if (tagsInput && tagsInput.value) {
+                tags = tagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag);
+            }
+            
+            // 创建新单词项
+            const newWordItem = document.createElement('div');
+            newWordItem.className = 'word-item';
+            
+            // 确定类型文本
+            const typeText = wordTypeSelect.value === 'phrase' ? 
+                `<span class="word-english">${wordInput.value}</span>
+                 <span class="phrase-badge">短语</span>` :
+                `<span class="word-english">${wordInput.value}</span>
+                 ${phoneticInput.value ? `<span class="word-phonetic">${phoneticInput.value}</span>` : ''}`;
+            
+            newWordItem.innerHTML = `
+                <div class="word-header">
+                    <div>
+                        ${typeText}
+                    </div>
+                    <div class="word-actions">
+                        <button class="btn btn-sm btn-outline">编辑</button>
+                        <button class="btn btn-sm btn-danger">删除</button>
+                    </div>
+                </div>
+                <div class="word-chinese">${chineseInput.value}</div>
+                ${exampleInput && exampleInput.value ? `<div class="word-example">${exampleInput.value}</div>` : ''}
+                <div class="word-footer">
+                    <div class="word-tags">
+                        ${tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="word-meta">创建于 ${new Date().toISOString().split('T')[0]}</div>
+                </div>
+            `;
+            
+            // 添加到单词列表
+            document.querySelector('.word-list').prepend(newWordItem);
+            
+            // 关闭模态框
+            closeModal();
         }
 
         // 点击模态框外部关闭
