@@ -640,36 +640,20 @@
         let isPaused = false;
         let isStarted = false;
         let currentInput = '';
-        let isDarkMode = false;
-
-        // 初始化主题
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                isDarkMode = true;
-                document.documentElement.setAttribute('data-theme', 'dark');
-                updateThemeIcon();
-            }
-        }
 
         // 切换主题
         function toggleTheme() {
-            isDarkMode = !isDarkMode;
-            if (isDarkMode) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'light');
-            }
-            updateThemeIcon();
-        }
-
-        // 更新主题图标
-        function updateThemeIcon() {
+            const html = document.documentElement;
             const themeIcon = document.getElementById('themeIcon');
-            if (themeIcon) {
-                themeIcon.innerHTML = `<use href="assets/icons.svg#${isDarkMode ? 'icon-sun' : 'icon-moon'}"></use>`;
+            
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.removeAttribute('data-theme');
+                themeIcon.innerHTML = '<use href="assets/icons.svg#icon-moon"></use>';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                themeIcon.innerHTML = '<use href="assets/icons.svg#icon-sun"></use>';
+                localStorage.setItem('theme', 'dark');
             }
         }
 
@@ -884,7 +868,7 @@
             const themeIcon = document.getElementById('themeIcon');
             
             if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
+                document.documentElement.setAttribute('data-theme', 'dark');
                 if (themeIcon) {
                     themeIcon.innerHTML = '<use href="assets/icons.svg#icon-sun"></use>';
                 }
@@ -899,7 +883,7 @@
 
                     // 初始化主题
 
-                    initTheme();
+                    
 
         
 
@@ -1125,6 +1109,24 @@
                 }
             }
         }
+        
+        // 监听localStorage变化，实现跨页面主题同步
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theme') {
+                const themeIcon = document.getElementById('themeIcon');
+                if (e.newValue === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    if (themeIcon) {
+                        themeIcon.innerHTML = '<use href="assets/icons.svg#icon-sun"></use>';
+                    }
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    if (themeIcon) {
+                        themeIcon.innerHTML = '<use href="assets/icons.svg#icon-moon"></use>';
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>

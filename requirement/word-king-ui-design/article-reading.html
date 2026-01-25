@@ -545,15 +545,15 @@
 
         // 主题切换功能
         function toggleTheme() {
-            const body = document.body;
+            const html = document.documentElement;
             const themeIcon = document.getElementById('themeIcon');
             
-            if (body.classList.contains('dark-mode')) {
-                body.classList.remove('dark-mode');
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.removeAttribute('data-theme');
                 themeIcon.innerHTML = '<use href="assets/icons.svg#icon-moon"></use>';
                 localStorage.setItem('theme', 'light');
             } else {
-                body.classList.add('dark-mode');
+                html.setAttribute('data-theme', 'dark');
                 themeIcon.innerHTML = '<use href="assets/icons.svg#icon-sun"></use>';
                 localStorage.setItem('theme', 'dark');
             }
@@ -565,7 +565,7 @@
             const themeIcon = document.getElementById('themeIcon');
             
             if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
+                document.documentElement.setAttribute('data-theme', 'dark');
                 if (themeIcon) {
                     themeIcon.innerHTML = '<use href="assets/icons.svg#icon-sun"></use>';
                 }
@@ -575,6 +575,24 @@
                 }
             }
         })();
+        
+        // 监听localStorage变化，实现跨页面主题同步
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'theme') {
+                const themeIcon = document.getElementById('themeIcon');
+                if (e.newValue === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    if (themeIcon) {
+                        themeIcon.innerHTML = '<use href="assets/icons.svg#icon-sun"></use>';
+                    }
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    if (themeIcon) {
+                        themeIcon.innerHTML = '<use href="assets/icons.svg#icon-moon"></use>';
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
