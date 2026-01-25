@@ -227,6 +227,9 @@
                     <a href="word-practice.html" class="nav-link">单词练习</a>
                     <a href="article-reading.html" class="nav-link">文章阅读</a>
                 </div>
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                    <svg width="20" height="20" id="themeIcon"><use href="assets/icons.svg#icon-moon"></use></svg>
+                </button>
             </div>
         </div>
     </nav>
@@ -480,6 +483,39 @@
                 closeModal();
             }
         });
+
+        // 主题切换功能
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                themeIcon.innerHTML = '<use href="assets/icons.svg#icon-moon"></use>';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.add('dark-mode');
+                themeIcon.innerHTML = '<use href="assets/icons.svg#icon-sun"></use>';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // 页面加载时应用保存的主题
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                if (themeIcon) {
+                    themeIcon.innerHTML = '<use href="assets/icons.svg#icon-sun"></use>';
+                }
+            } else {
+                if (themeIcon) {
+                    themeIcon.innerHTML = '<use href="assets/icons.svg#icon-moon"></use>';
+                }
+            }
+        })();
     </script>
 </body>
 </html>

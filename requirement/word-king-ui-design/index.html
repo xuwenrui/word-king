@@ -249,11 +249,16 @@
                     <img src="assets/logo.svg" alt="Word King Logo" style="width: 40px; height: 40px;">
                     <a href="index.html" style="font-size: 22px; font-weight: 600; letter-spacing: -0.015em; color: var(--text-primary); text-decoration: none;">Word King</a>
                 </div>
-                <div class="nav">
-                    <a href="word-management.html" class="nav-link">单词管理</a>
-                    <a href="article-management.html" class="nav-link">文章管理</a>
-                    <a href="word-practice.html" class="nav-link">单词练习</a>
-                    <a href="article-reading.html" class="nav-link">文章阅读</a>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                    <div class="nav">
+                        <a href="word-management.html" class="nav-link">单词管理</a>
+                        <a href="article-management.html" class="nav-link">文章管理</a>
+                        <a href="word-practice.html" class="nav-link">单词练习</a>
+                        <a href="article-reading.html" class="nav-link">文章阅读</a>
+                    </div>
+                    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                        <svg width="20" height="20" id="themeIcon"><use href="assets/icons.svg#icon-moon"></use></svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -315,5 +320,40 @@
             <p>&copy; 2026 Word King. 让英语学习更高效。</p>
         </div>
     </footer>
+
+    <script>
+        // 主题切换功能
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                themeIcon.innerHTML = '<use href="assets/icons.svg#icon-moon"></use>';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.add('dark-mode');
+                themeIcon.innerHTML = '<use href="assets/icons.svg#icon-sun"></use>';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // 页面加载时应用保存的主题
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                if (themeIcon) {
+                    themeIcon.innerHTML = '<use href="assets/icons.svg#icon-sun"></use>';
+                }
+            } else {
+                if (themeIcon) {
+                    themeIcon.innerHTML = '<use href="assets/icons.svg#icon-moon"></use>';
+                }
+            }
+        })();
+    </script>
 </body>
 </html>
