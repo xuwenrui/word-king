@@ -61,3 +61,7 @@ coverage/
 *.bak
 *.backup
 .sass-cache/
+
+# Java 构建产物
+target/
+out/
