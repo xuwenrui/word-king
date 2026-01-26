@@ -136,51 +136,86 @@ src/
 ### 7.2 文章阅读接口
 - **移除**: 与阅读进度和分享相关的接口
 
-## 8. 安全性设计
+## 8. API 接口设计
 
-### 8.1 身份认证
+### 8.1 词汇管理接口
+| 方法 | 路径 | 模块/文件 | 类型 | 功能描述 | 请求体 (JSON) | 成功响应 (200 OK) |
+|------|------|-----------|------|----------|---------------|-------------------|
+| GET | /api/words | WordController | 查询 | 获取词汇列表（支持分页、搜索、标签筛选） | N/A | `{"code": 200, "data": {"records": [{"id": 1, "english": "apple", "type": "word", "phonetic": "/ˈæpl/", "chinese": "苹果", "example": "I eat an apple every day.", "tags": ["noun", "basic"], "createdAt": "2024-01-01T00:00:00"}], "total": 100, "size": 10, "current": 1}}` |
+| POST | /api/words | WordController | 新增 | 添加新词汇（自动识别单词/短语类型） | `{"english": "apple", "phonetic": "/ˈæpl/", "chinese": "苹果", "example": "I eat an apple every day.", "tags": ["noun", "basic"]}` | `{"code": 200, "data": {"id": 1, "english": "apple", "type": "word", "phonetic": "/ˈæpl/", "chinese": "苹果", "example": "I eat an apple every day.", "tags": ["noun", "basic"], "createdAt": "2024-01-01T00:00:00"}}` |
+| PUT | /api/words/{id} | WordController | 更新 | 更新词汇信息 | `{"english": "apple", "phonetic": "/ˈæpl/", "chinese": "苹果", "example": "I eat an apple every day.", "tags": ["noun", "basic"]}` | `{"code": 200, "data": {"id": 1, "english": "apple", "type": "word", "phonetic": "/ˈæpl/", "chinese": "苹果", "example": "I eat an apple every day.", "tags": ["noun", "basic"], "createdAt": "2024-01-01T00:00:00"}}` |
+| DELETE | /api/words/{id} | WordController | 删除 | 删除词汇 | N/A | `{"code": 200, "data": null}` |
+| GET | /api/words/tags | WordController | 查询 | 获取所有可用标签 | N/A | `{"code": 200, "data": ["noun", "verb", "adjective", "adverb", "phrase", "basic", "intermediate", "advanced"]}` |
+
+### 8.2 文章管理接口
+| 方法 | 路径 | 模块/文件 | 类型 | 功能描述 | 请求体 (JSON) | 成功响应 (200 OK) |
+|------|------|-----------|------|----------|---------------|-------------------|
+| GET | /api/articles | ArticleController | 查询 | 获取文章列表（支持分页、搜索） | N/A | `{"code": 200, "data": {"records": [{"id": 1, "title": "My First Article", "content": "This is my first article.", "tags": ["beginner", "daily"], "createdAt": "2024-01-01T00:00:00"}], "total": 50, "size": 10, "current": 1}}` |
+| GET | /api/articles/{id} | ArticleController | 查询 | 获取文章详情 | N/A | `{"code": 200, "data": {"id": 1, "title": "My First Article", "content": "This is my first article.", "tags": ["beginner", "daily"], "createdAt": "2024-01-01T00:00:00"}}` |
+| POST | /api/articles | ArticleController | 新增 | 添加新文章 | `{"title": "My First Article", "content": "This is my first article.", "tags": ["beginner", "daily"]}` | `{"code": 200, "data": {"id": 1, "title": "My First Article", "content": "This is my first article.", "tags": ["beginner", "daily"], "createdAt": "2024-01-01T00:00:00"}}` |
+| PUT | /api/articles/{id} | ArticleController | 更新 | 更新文章信息 | `{"title": "My Updated Article", "content": "This is my updated article.", "tags": ["beginner", "daily"]}` | `{"code": 200, "data": {"id": 1, "title": "My Updated Article", "content": "This is my updated article.", "tags": ["beginner", "daily"], "createdAt": "2024-01-01T00:00:00"}}` |
+| DELETE | /api/articles/{id} | ArticleController | 删除 | 删除文章 | N/A | `{"code": 200, "data": null}` |
+
+### 8.3 练习管理接口
+| 方法 | 路径 | 模块/文件 | 类型 | 功能描述 | 请求体 (JSON) | 成功响应 (200 OK) |
+|------|------|-----------|------|----------|---------------|-------------------|
+| POST | /api/practice/sessions | PracticeController | 新增 | 创建练习会话 | `{"wordCount": 10, "tags": ["basic"]}` | `{"code": 200, "data": {"id": 1, "wordCount": 10, "tags": ["basic"], "startedAt": "2024-01-01T00:00:00"}}` |
+| GET | /api/practice/sessions | PracticeController | 查询 | 获取练习会话列表 | N/A | `{"code": 200, "data": {"records": [{"id": 1, "wordCount": 10, "correctCount": 8, "startedAt": "2024-01-01T00:00:00", "endedAt": "2024-01-01T00:10:00"}], "total": 20, "size": 10, "current": 1}}` |
+| POST | /api/practice/records | PracticeController | 新增 | 添加练习记录 | `{"sessionId": 1, "wordId": 1, "isCorrect": true, "attempts": 1}` | `{"code": 200, "data": {"id": 1, "sessionId": 1, "wordId": 1, "isCorrect": true, "attempts": 1, "createdAt": "2024-01-01T00:00:00"}}` |
+| GET | /api/practice/stats | PracticeController | 查询 | 获取练习统计数据 | N/A | `{"code": 200, "data": {"totalSessions": 20, "totalWords": 200, "correctRate": 0.8, "recentSessions": [...]}}` |
+
+### 8.4 用户认证接口
+| 方法 | 路径 | 模块/文件 | 类型 | 功能描述 | 请求体 (JSON) | 成功响应 (200 OK) |
+|------|------|-----------|------|----------|---------------|-------------------|
+| POST | /api/auth/login | AuthController | 新增 | 用户登录 | `{"username": "admin", "password": "password"}` | `{"code": 200, "data": {"token": "jwt-token", "user": {"id": 1, "username": "admin", "roles": ["admin"]}}}` |
+| POST | /api/auth/register | AuthController | 新增 | 用户注册 | `{"username": "newuser", "password": "password", "email": "user@example.com"}` | `{"code": 200, "data": {"id": 2, "username": "newuser", "email": "user@example.com"}}` |
+| GET | /api/users/me | UserController | 查询 | 获取当前用户信息 | N/A | `{"code": 200, "data": {"id": 1, "username": "admin", "email": "admin@example.com", "roles": ["admin"]}}` |
+
+## 9. 安全性设计
+
+### 9.1 身份认证
 - 使用 JWT Token 进行身份认证
 - 无状态会话管理
 
-### 8.2 权限控制
+### 9.2 权限控制
 - 基于角色的访问控制 (RBAC)
 - 接口级别的权限验证
 
-### 8.3 数据安全
+### 9.3 数据安全
 - 参数验证和清理
 - 防止 SQL 注入和 XSS 攻击
 
-## 9. 性能优化
+## 10. 性能优化
 
-### 9.1 前端优化
+### 10.1 前端优化
 - 组件懒加载和代码分割
 - 图片懒加载
 - 使用 React.memo 避免不必要的渲染
 
-### 9.2 后端优化
+### 10.2 后端优化
 - 数据库查询优化和索引设计
 - 缓存策略（Redis）
 - 分页查询避免大数据量加载
 
-## 10. 日志管理
+## 11. 日志管理
 
-### 10.1 后端日志
+### 11.1 后端日志
 - 使用 Logback 作为日志框架
 - 按环境区分日志级别和输出方式
 - 分离业务日志和错误日志
 
-### 10.2 前端日志
+### 11.2 前端日志
 - 统一日志记录接口
 - 错误收集和上报机制
 
-## 11. 部署配置
+## 12. 部署配置
 
-### 11.1 后端部署
+### 12.1 后端部署
 - 使用 Spring Boot 的打包机制
 - 支持 Docker 容器化部署
 - 环境变量配置管理
 
-### 11.2 前端部署
+### 12.2 前端部署
 - Vite 构建优化
 - 静态资源托管
 - CDN 加速配置
