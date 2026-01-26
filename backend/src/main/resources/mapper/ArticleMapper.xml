@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wordking.mapper.ArticleMapper">
+
+    <select id="selectByCategory" resultType="com.wordking.entity.Article">
+        SELECT * FROM T_ARTICLE
+        <where>
+            <if test="categoryId != null">
+                AND CATEGORY_ID = #{categoryId}
+            </if>
+        </where>
+        ORDER BY CREATED_TIME DESC
+    </select>
+
+    <select id="selectByKeyword" resultType="com.wordking.entity.Article">
+        SELECT * FROM T_ARTICLE
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (TITLE LIKE CONCAT('%', #{keyword}, '%')
+                OR CONTENT LIKE CONCAT('%', #{keyword}, '%')
+                OR SUMMARY LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY CREATED_TIME DESC
+    </select>
+
+    <select id="selectByAuthor" resultType="com.wordking.entity.Article">
+        SELECT * FROM T_ARTICLE
+        <where>
+            <if test="author != null and author != ''">
+                AND AUTHOR LIKE CONCAT('%', #{author}, '%')
+            </if>
+        </where>
+        ORDER BY CREATED_TIME DESC
+    </select>
+
+</mapper>
