@@ -1,96 +1,246 @@
-import React from 'react';
-import { ElCard, ElButton, ElTable, ElTableColumn, ElInput, ElPagination, ElTag } from 'element-plus';
+import React, { useState } from 'react';
 
 interface Article {
-  id: number;
+  id: string;
   title: string;
-  summary: string;
-  author: string;
-  status: number;
-  categoryId: number;
-  createdTime: string;
-  updatedTime: string;
+  excerpt: string;
+  tags: string[];
+  wordCount: number;
+  newWordsCount: number;
+  createdAt: string;
 }
 
 const ArticleManagement: React.FC = () => {
-  // 示例文章数据
-  const articles: Article[] = [
+  const [articles, setArticles] = useState<Article[]>([
     {
-      id: 1,
-      title: 'The Impact of Technology on Modern Education',
-      summary: 'This article explores how technology has transformed the educational landscape...',
-      author: 'John Doe',
-      status: 1,
-      categoryId: 1,
-      createdTime: '2023-01-10 15:30:00',
-      updatedTime: '2023-01-10 15:30:00'
+      id: '1',
+      title: 'The Benefits of Reading',
+      excerpt: 'Reading is one of most enriching activities a person can engage in. It opens up new worlds, introduces us to different perspectives, and enhances our understanding of world around us. Whether you\'re reading fiction, non-fiction, or poetry, each book has something unique to offer.',
+      tags: ['散文', '中等'],
+      wordCount: 245,
+      newWordsCount: 12,
+      createdAt: '2026-01-20'
     },
     {
-      id: 2,
-      title: 'Sustainable Living: Small Changes, Big Impact',
-      summary: 'Discover how small lifestyle changes can lead to a more sustainable future...',
-      author: 'Jane Smith',
-      status: 1,
-      categoryId: 2,
-      createdTime: '2023-01-12 11:20:00',
-      updatedTime: '2023-01-12 11:20:00'
+      id: '2',
+      title: 'A Journey Through Time',
+      excerpt: 'Once upon a time, in a small village nestled between rolling hills and a sparkling river, there lived a young girl named Lily. She had a curious mind and a heart full of dreams. Every day, she would explore of world around her, discovering hidden treasures and meeting interesting characters.',
+      tags: ['故事', '简单'],
+      wordCount: 189,
+      newWordsCount: 8,
+      createdAt: '2026-01-22'
     },
     {
-      id: 3,
-      title: 'The Psychology of Learning a New Language',
-      summary: 'Understanding the mental processes involved in language acquisition...',
-      author: 'Robert Johnson',
-      status: 1,
-      categoryId: 3,
-      createdTime: '2023-01-14 09:45:00',
-      updatedTime: '2023-01-14 09:45:00'
+      id: '3',
+      title: 'The Science of Sleep',
+      excerpt: 'Sleep is a fundamental biological process that plays a crucial role in maintaining our physical and mental health. During sleep, our bodies repair tissues, synthesize hormones, and consolidate memories. Scientists have discovered that sleep consists of several distinct stages, each serving unique functions.',
+      tags: ['科普', '困难'],
+      wordCount: 312,
+      newWordsCount: 18,
+      createdAt: '2026-01-23'
+    },
+    {
+      id: '4',
+      title: 'Technology in Modern Life',
+      excerpt: 'Technology has transformed nearly every aspect of our daily lives. From smartphones to smart homes, we are constantly surrounded by innovative solutions designed to make life easier and more efficient. However, this rapid technological advancement also brings new challenges and considerations.',
+      tags: ['新闻', '中等'],
+      wordCount: 278,
+      newWordsCount: 15,
+      createdAt: '2026-01-24'
     }
-  ];
+  ]);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [tagFilter, setTagFilter] = useState('all');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentArticle, setCurrentArticle] = useState({
+    title: '',
+    content: '',
+    tags: ''
+  });
+
+  const openModal = () => {
+    setCurrentArticle({
+      title: '',
+      content: '',
+      tags: ''
+    });
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const saveArticle = () => {
+    if (!currentArticle.title || !currentArticle.content) {
+      alert('请填写必填字段：文章标题和内容');
+      return;
+    }
+
+    const tags = currentArticle.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+    const wordCount = currentArticle.content.split(/\s+/).length;
+
+    const newArticle: Article = {
+      id: Date.now().toString(),
+      title: currentArticle.title,
+      excerpt: currentArticle.content.substring(0, 300) + '...',
+      tags,
+      wordCount,
+      newWordsCount: Math.floor(Math.random() * 20),
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    setArticles(prev => [newArticle, ...prev]);
+    closeModal();
+  };
+
+  const filteredArticles = articles.filter(article => {
+    const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      article.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTag = tagFilter === 'all' || article.tags.includes(tagFilter);
+    return matchesSearch && matchesTag;
+  });
 
   return (
-    <div className="wk-container">
-      <ElCard>
-        <div slot="header" className="clearfix">
-          <h2 style={{ display: 'inline' }}>文章管理</h2>
-          <ElButton type="primary" style={{ float: 'right' }}>添加文章</ElButton>
+    <div className="article-management">
+      <div className="page-header">
+        <div className="container">
+          <h1 className="page-title">文章管理</h1>
+          <p className="page-subtitle">创建和管理您的学习文章</p>
         </div>
-        
-        <div style={{ marginBottom: '20px' }}>
-          <ElInput 
-            placeholder="搜索文章..." 
-            style={{ width: '300px', marginRight: '10px' }} 
-          />
-          <ElButton type="primary">搜索</ElButton>
+      </div>
+
+      <main className="main-content">
+        <div className="container">
+          <div className="toolbar">
+            <div className="search-box">
+              <svg className="search-icon" width="18" height="18">
+                <use href="/assets/icons.svg#icon-search"></use>
+              </svg>
+              <input 
+                type="text" 
+                className="search-input" 
+                placeholder="搜索文章..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <select 
+              className="filter-select"
+              value={tagFilter}
+              onChange={(e) => setTagFilter(e.target.value)}
+            >
+              <option value="all">全部标签</option>
+              <option value="新闻">新闻</option>
+              <option value="故事">故事</option>
+              <option value="散文">散文</option>
+              <option value="科普">科普</option>
+              <option value="简单">简单</option>
+              <option value="中等">中等</option>
+              <option value="困难">困难</option>
+            </select>
+            <button className="btn btn-primary" onClick={openModal}>
+              <svg width="18" height="18">
+                <use href="/assets/icons.svg#icon-add"></use>
+              </svg>
+              创建文章
+            </button>
+          </div>
+
+          <div className="article-list">
+            {filteredArticles.map(article => (
+              <div key={article.id} className="article-item">
+                <div className="article-header">
+                  <div>
+                    <h3 className="article-title">{article.title}</h3>
+                    <div className="article-tags">
+                      {article.tags.map((tag, index) => (
+                        <span key={index} className="tag">{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="article-actions">
+                    <button className="btn btn-sm btn-outline">编辑</button>
+                    <button className="btn btn-sm btn-danger">删除</button>
+                  </div>
+                </div>
+                <p className="article-excerpt">{article.excerpt}</p>
+                <div className="article-footer">
+                  <div className="article-meta">
+                    <div className="article-meta-item">
+                      <svg width="14" height="14">
+                        <use href="/assets/icons.svg#icon-calendar"></use>
+                      </svg>
+                      <span>{article.createdAt}</span>
+                    </div>
+                    <div className="article-meta-item">
+                      <svg width="14" height="14">
+                        <use href="/assets/icons.svg#icon-word-count"></use>
+                      </svg>
+                      <span>{article.wordCount} 词</span>
+                    </div>
+                    <div className="article-meta-item">
+                      <svg width="14" height="14">
+                        <use href="/assets/icons.svg#icon-tag"></use>
+                      </svg>
+                      <span>{article.newWordsCount} 个生词</span>
+                    </div>
+                  </div>
+                  <button className="btn btn-sm btn-primary">阅读文章</button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        
-        <ElTable data={articles} style={{ width: '100%' }}>
-          <ElTableColumn prop="id" label="ID" width="80" />
-          <ElTableColumn prop="title" label="标题" width="200" />
-          <ElTableColumn prop="summary" label="摘要" width="300" />
-          <ElTableColumn prop="author" label="作者" width="120" />
-          <ElTableColumn prop="status" label="状态" width="100">
-            <template #default="{ row }">
-              <ElTag type={row.status === 1 ? 'success' : 'info'}>
-                {row.status === 1 ? '已发布' : '草稿'}
-              </ElTag>
-            </template>
-          </ElTableColumn>
-          <ElTableColumn prop="createdTime" label="创建时间" width="150" />
-          <ElTableColumn label="操作" width="150">
-            <template>
-              <ElButton size="small" type="primary">编辑</ElButton>
-              <ElButton size="small" type="danger">删除</ElButton>
-            </template>
-          </ElTableColumn>
-        </ElTable>
-        
-        <div style={{ marginTop: '20px', textAlign: 'center' }}>
-          <ElPagination
-            layout="prev, pager, next"
-            total={articles.length}
-          />
+      </main>
+
+      {isModalOpen && (
+        <div className="modal" onClick={closeModal}>
+          <div className="modal-content" style={{ maxWidth: '800px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3 className="modal-title">创建新文章</h3>
+              <button className="modal-close" onClick={closeModal}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">文章标题 *</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  placeholder="请输入文章标题"
+                  value={currentArticle.title}
+                  onChange={(e) => setCurrentArticle(prev => ({ ...prev, title: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">文章内容 *</label>
+                <textarea 
+                  className="form-textarea" 
+                  style={{ minHeight: '300px' }}
+                  placeholder="请输入文章内容"
+                  value={currentArticle.content}
+                  onChange={(e) => setCurrentArticle(prev => ({ ...prev, content: e.target.value }))}
+                ></textarea>
+              </div>
+              <div className="form-group">
+                <label className="form-label">标签 (用逗号分隔)</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  placeholder="例如：新闻,中等,科普"
+                  value={currentArticle.tags}
+                  onChange={(e) => setCurrentArticle(prev => ({ ...prev, tags: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-outline" onClick={closeModal}>取消</button>
+              <button className="btn btn-primary" onClick={saveArticle}>保存</button>
+            </div>
+          </div>
         </div>
-      </ElCard>
+      )}
     </div>
   );
 };
