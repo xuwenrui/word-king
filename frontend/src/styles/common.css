@@ -1009,6 +1009,11 @@ html {
     text-align: center;
 }
 
+/* 夜间模式英雄区域 */
+[data-theme="dark"] .hero {
+    background: #000000;
+}
+
 .hero h1 {
     font-size: 56px;
     font-weight: 600;

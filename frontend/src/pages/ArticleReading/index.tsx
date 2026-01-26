@@ -1,6 +1,10 @@
 import React from 'react';
 
-const ArticleReading: React.FC = () => {
+interface ArticleReadingProps {
+  isDarkTheme: boolean;
+}
+
+const ArticleReading: React.FC<ArticleReadingProps> = ({ isDarkTheme }) => {
   // 示例文章数据
   const article = {
     id: 1,
@@ -18,17 +22,24 @@ Looking forward, the future of education will likely see an even greater integra
     createdTime: '2023-01-10 15:30:00'
   };
 
+  // 根据主题设置颜色
+  const cardBgColor = isDarkTheme ? '#1a1a1a' : '#fff';
+  const textColor = isDarkTheme ? '#e0e0e0' : '#303133';
+  const secondaryTextColor = isDarkTheme ? '#909399' : '#909399';
+  const wordHighlightBgColor = isDarkTheme ? '#2c2c2c' : '#f5f7fa';
+  const wordHighlightTextColor = isDarkTheme ? '#e0e0e0' : '#303133';
+
   return (
-    <div className="container" style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <div className="card" style={{ backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 12px 0 rgba(0, 0, 0, 0.1)', padding: '24px', marginBottom: '20px' }}>
-        <h1 style={{ fontSize: '28px', marginBottom: '16px' }}>{article.title}</h1>
-        <div style={{ color: '#909399', marginBottom: '20px' }}>
+    <div className="container" style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', color: textColor }}>
+      <div className="card" style={{ backgroundColor: cardBgColor, borderRadius: '8px', boxShadow: '0 2px 12px 0 rgba(0, 0, 0, 0.1)', padding: '24px', marginBottom: '20px', color: textColor }}>
+        <h1 style={{ fontSize: '28px', marginBottom: '16px', color: textColor }}>{article.title}</h1>
+        <div style={{ color: secondaryTextColor, marginBottom: '20px' }}>
           作者: {article.author} | 发布时间: {article.createdTime}
         </div>
         
         <div className="article-content">
           {article.content.split('\n\n').map((paragraph, index) => (
-            <p key={index} style={{ marginBottom: '15px', lineHeight: '1.8' }}>
+            <p key={index} style={{ marginBottom: '15px', lineHeight: '1.8', color: textColor }}>
               {paragraph}
             </p>
           ))}
@@ -38,18 +49,6 @@ Looking forward, the future of education will likely see an even greater integra
           <button className="btn btn-primary" style={{ marginRight: '10px' }}>收藏文章</button>
           <button className="btn btn-success" style={{ marginRight: '10px' }}>练习相关词汇</button>
           <button className="btn btn-info">分享文章</button>
-        </div>
-      </div>
-      
-      <div className="card" style={{ backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 12px 0 rgba(0, 0, 0, 0.1)', padding: '24px' }}>
-        <h3 style={{ marginBottom: '16px' }}>文章相关词汇</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '10px' }}>
-          <div className="word-highlight" style={{ padding: '8px 12px', backgroundColor: '#f5f7fa', borderRadius: '4px', textAlign: 'center' }}>revolutionized</div>
-          <div className="word-highlight" style={{ padding: '8px 12px', backgroundColor: '#f5f7fa', borderRadius: '4px', textAlign: 'center' }}>integration</div>
-          <div className="word-highlight" style={{ padding: '8px 12px', backgroundColor: '#f5f7fa', borderRadius: '4px', textAlign: 'center' }}>personalized</div>
-          <div className="word-highlight" style={{ padding: '8px 12px', backgroundColor: '#f5f7fa', borderRadius: '4px', textAlign: 'center' }}>accessibility</div>
-          <div className="word-highlight" style={{ padding: '8px 12px', backgroundColor: '#f5f7fa', borderRadius: '4px', textAlign: 'center' }}>challenges</div>
-          <div className="word-highlight" style={{ padding: '8px 12px', backgroundColor: '#f5f7fa', borderRadius: '4px', textAlign: 'center' }}>integration</div>
         </div>
       </div>
     </div>

@@ -1,14 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Home: React.FC = () => {
+interface HomeProps {
+  isDarkTheme: boolean;
+}
+
+const Home: React.FC<HomeProps> = ({ isDarkTheme }) => {
+  // 根据主题设置颜色
+  const heroBgColor = isDarkTheme ? '#000000' : '#f5f7fa';
+  const heroTextColor = isDarkTheme ? '#e0e0e0' : '#303133';
+  const heroSubTextColor = isDarkTheme ? '#b0b0b0' : '#606266';
+  const ctaBgColor = isDarkTheme ? '#1a1a1a' : '#409eff';
+  const ctaTextColor = isDarkTheme ? '#e0e0e0' : '#fff';
+  const ctaSubTextColor = isDarkTheme ? '#b0b0b0' : '#e0e0e0';
+
   return (
-    <div className="home">
+    <div className="home" style={{ backgroundColor: isDarkTheme ? '#121212' : '#fff' }}>
       {/* 英雄区域 */}
-      <section className="hero">
+      <section className="hero" style={{ backgroundColor: heroBgColor, color: heroTextColor }}>
         <div className="container">
-          <h1>掌握英语，从单词开始</h1>
-          <p>Word King 是一款专业的英语单词学习助手，帮助您高效管理单词、练习拼写、通过阅读提升英语水平。</p>
+          <h1 style={{ color: heroTextColor }}>掌握英语，从单词开始</h1>
+          <p style={{ color: heroSubTextColor }}>Word King 是一款专业的英语单词学习助手，帮助您高效管理单词、练习拼写、通过阅读提升英语水平。</p>
           <div className="hero-buttons">
             <Link to="/word-management" className="btn btn-primary">开始学习</Link>
             <Link to="/article-reading" className="btn btn-outline">阅读文章</Link>
@@ -16,40 +28,11 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 功能特性 */}
-      <section className="features">
-        <div className="container">
-          <h2 className="features-title">核心功能</h2>
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">📝</div>
-              <h3 className="feature-title">单词管理</h3>
-              <p className="feature-desc">轻松添加、编辑和管理您的单词和短语，支持分类标签和搜索功能。</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">📚</div>
-              <h3 className="feature-title">文章管理</h3>
-              <p className="feature-desc">创建和管理学习文章，支持难度分类，与单词关联，系统化学习。</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">🎯</div>
-              <h3 className="feature-title">单词练习</h3>
-              <p className="feature-desc">多种练习模式，包括拼写、释义测试，帮助您巩固记忆，提升学习效果。</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">📖</div>
-              <h3 className="feature-title">文章阅读</h3>
-              <p className="feature-desc">在阅读中学习，点击单词查看释义，收藏单词，记录阅读进度。</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* 行动号召 */}
-      <section className="cta">
+      <section className="cta" style={{ backgroundColor: ctaBgColor, color: ctaTextColor }}>
         <div className="container">
-          <h2 className="cta-title">准备好提升您的英语了吗？</h2>
-          <p className="cta-desc">立即开始使用 Word King，体验高效的单词学习方式，让英语学习变得更加轻松有趣。</p>
+          <h2 className="cta-title" style={{ color: ctaTextColor }}>准备好提升您的英语了吗？</h2>
+          <p className="cta-desc" style={{ color: ctaSubTextColor }}>立即开始使用 Word King，体验高效的单词学习方式，让英语学习变得更加轻松有趣。</p>
           <Link to="/word-management" className="btn btn-primary btn-lg">立即开始</Link>
         </div>
       </section>
