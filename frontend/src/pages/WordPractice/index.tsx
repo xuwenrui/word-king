@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { ElCard, ElButton, ElRadio, ElRadioGroup, ElProgress, ElRow, ElCol } from 'element-plus';
 
 interface Word {
   id: number;
@@ -66,69 +65,86 @@ const WordPractice: React.FC = () => {
 
   if (showResult) {
     return (
-      <div className="wk-container">
-        <ElCard className="result-card">
+      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+        <div style={{ backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 12px 0 rgba(0, 0, 0, 0.1)', padding: '24px', textAlign: 'center' }}>
           <h2>练习完成！</h2>
           <p>您的得分: {score}/{words.length}</p>
           <p>正确率: {Math.round((score / words.length) * 100)}%</p>
-          <ElButton type="primary" onClick={restartPractice} style={{ marginTop: '20px' }}>
+          <button className="btn btn-primary" onClick={restartPractice} style={{ marginTop: '20px' }}>
             再次练习
-          </ElButton>
-        </ElCard>
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="wk-container">
-      <ElRow gutter={20}>
-        <ElCol span={24}>
-          <h2>词汇练习</h2>
-        </ElCol>
-      </ElRow>
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+      <div style={{ marginBottom: '20px' }}>
+        <h2>词汇练习</h2>
+      </div>
       
-      <ElRow gutter={20} style={{ marginTop: '20px' }}>
-        <ElCol span={24}>
-          <ElProgress 
-            percentage={Math.round(((currentQuestion + 1) / words.length) * 100)} 
-            text-inside 
-            stroke-width={20} 
-          />
-        </ElCol>
-      </ElRow>
+      <div style={{ marginBottom: '20px' }}>
+        <div style={{ 
+          height: '20px', 
+          backgroundColor: '#f0f2f5', 
+          borderRadius: '10px', 
+          overflow: 'hidden',
+          position: 'relative'
+        }}>
+          <div style={{ 
+            height: '100%', 
+            backgroundColor: '#409eff', 
+            borderRadius: '10px',
+            width: `${Math.round(((currentQuestion + 1) / words.length) * 100)}%`,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            color: '#fff',
+            fontSize: '12px',
+            fontWeight: 'bold'
+          }}>
+            {Math.round(((currentQuestion + 1) / words.length) * 100)}%
+          </div>
+        </div>
+      </div>
       
-      <ElRow gutter={20} style={{ marginTop: '20px' }}>
-        <ElCol span={24}>
-          <ElCard className="practice-card">
-            <h3>第 {currentQuestion + 1} 题</h3>
-            <h4>单词: {words[currentQuestion].word}</h4>
-            <p>请选择该单词的正确含义:</p>
-            
-            <ElRadioGroup 
-              value={selectedAnswer} 
-              onChange={handleAnswerSelect}
-              style={{ display: 'block', marginTop: '15px' }}
-            >
-              {words[currentQuestion].options.map((option, index) => (
-                <div key={index} style={{ marginBottom: '10px' }}>
-                  <ElRadio label={option} style={{ display: 'block' }}>
-                    {option}
-                  </ElRadio>
-                </div>
-              ))}
-            </ElRadioGroup>
-            
-            <ElButton 
-              type="primary" 
-              disabled={!selectedAnswer}
-              onClick={handleNextQuestion}
-              style={{ marginTop: '20px' }}
-            >
-              {currentQuestion + 1 === words.length ? '完成练习' : '下一题'}
-            </ElButton>
-          </ElCard>
-        </ElCol>
-      </ElRow>
+      <div style={{ backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 12px 0 rgba(0, 0, 0, 0.1)', padding: '24px' }}>
+        <h3>第 {currentQuestion + 1} 题</h3>
+        <h4>单词: {words[currentQuestion].word}</h4>
+        <p>请选择该单词的正确含义:</p>
+        
+        <div style={{ display: 'block', marginTop: '15px' }}>
+          {words[currentQuestion].options.map((option, index) => (
+            <div key={index} style={{ marginBottom: '10px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                <input 
+                  type="radio" 
+                  name="answer" 
+                  value={option} 
+                  checked={selectedAnswer === option}
+                  onChange={() => handleAnswerSelect(option)}
+                  style={{ marginRight: '8px' }}
+                />
+                <span>{option}</span>
+              </label>
+            </div>
+          ))}
+        </div>
+        
+        <button 
+          className="btn btn-primary" 
+          disabled={!selectedAnswer}
+          onClick={handleNextQuestion}
+          style={{ 
+            marginTop: '20px',
+            opacity: !selectedAnswer ? 0.5 : 1,
+            cursor: !selectedAnswer ? 'not-allowed' : 'pointer'
+          }}
+        >
+          {currentQuestion + 1 === words.length ? '完成练习' : '下一题'}
+        </button>
+      </div>
     </div>
   );
 };

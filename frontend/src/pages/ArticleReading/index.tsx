@@ -1,5 +1,4 @@
 import React from 'react';
-import { ElCard, ElButton, ElRow, ElCol } from 'element-plus';
 
 const ArticleReading: React.FC = () => {
   // 示例文章数据
@@ -20,9 +19,9 @@ Looking forward, the future of education will likely see an even greater integra
   };
 
   return (
-    <div className="wk-container">
-      <ElCard>
-        <h1>{article.title}</h1>
+    <div className="container" style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+      <div className="card" style={{ backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 12px 0 rgba(0, 0, 0, 0.1)', padding: '24px', marginBottom: '20px' }}>
+        <h1 style={{ fontSize: '28px', marginBottom: '16px' }}>{article.title}</h1>
         <div style={{ color: '#909399', marginBottom: '20px' }}>
           作者: {article.author} | 发布时间: {article.createdTime}
         </div>
@@ -36,35 +35,23 @@ Looking forward, the future of education will likely see an even greater integra
         </div>
         
         <div style={{ marginTop: '30px', textAlign: 'center' }}>
-          <ElButton type="primary">收藏文章</ElButton>
-          <ElButton type="success" style={{ marginLeft: '10px' }}>练习相关词汇</ElButton>
-          <ElButton type="info" style={{ marginLeft: '10px' }}>分享文章</ElButton>
+          <button className="btn btn-primary" style={{ marginRight: '10px' }}>收藏文章</button>
+          <button className="btn btn-success" style={{ marginRight: '10px' }}>练习相关词汇</button>
+          <button className="btn btn-info">分享文章</button>
         </div>
-      </ElCard>
+      </div>
       
-      <ElCard style={{ marginTop: '20px' }}>
-        <h3>文章相关词汇</h3>
-        <ElRow gutter={10}>
-          <ElCol span={4}>
-            <div className="word-highlight">revolutionized</div>
-          </ElCol>
-          <ElCol span={4}>
-            <div className="word-highlight">integration</div>
-          </ElCol>
-          <ElCol span={4}>
-            <div className="word-highlight">personalized</div>
-          </ElCol>
-          <ElCol span={4}>
-            <div className="word-highlight">accessibility</div>
-          </ElCol>
-          <ElCol span={4}>
-            <div className="word-highlight">challenges</div>
-          </ElCol>
-          <ElCol span={4}>
-            <div className="word-highlight">integration</div>
-          </ElCol>
-        </ElRow>
-      </ElCard>
+      <div className="card" style={{ backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 12px 0 rgba(0, 0, 0, 0.1)', padding: '24px' }}>
+        <h3 style={{ marginBottom: '16px' }}>文章相关词汇</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '10px' }}>
+          <div className="word-highlight" style={{ padding: '8px 12px', backgroundColor: '#f5f7fa', borderRadius: '4px', textAlign: 'center' }}>revolutionized</div>
+          <div className="word-highlight" style={{ padding: '8px 12px', backgroundColor: '#f5f7fa', borderRadius: '4px', textAlign: 'center' }}>integration</div>
+          <div className="word-highlight" style={{ padding: '8px 12px', backgroundColor: '#f5f7fa', borderRadius: '4px', textAlign: 'center' }}>personalized</div>
+          <div className="word-highlight" style={{ padding: '8px 12px', backgroundColor: '#f5f7fa', borderRadius: '4px', textAlign: 'center' }}>accessibility</div>
+          <div className="word-highlight" style={{ padding: '8px 12px', backgroundColor: '#f5f7fa', borderRadius: '4px', textAlign: 'center' }}>challenges</div>
+          <div className="word-highlight" style={{ padding: '8px 12px', backgroundColor: '#f5f7fa', borderRadius: '4px', textAlign: 'center' }}>integration</div>
+        </div>
+      </div>
     </div>
   );
 };

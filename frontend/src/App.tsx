@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
-import Home from './pages/Home';
-import WordPractice from './pages/WordPractice';
-import WordManagement from './pages/WordManagement';
-import ArticleManagement from './pages/ArticleManagement';
-import ArticleReading from './pages/ArticleReading';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
+
+// 懒加载页面组件
+const Home = lazy(() => import('./pages/Home'));
+const WordPractice = lazy(() => import('./pages/WordPractice'));
+const WordManagement = lazy(() => import('./pages/WordManagement'));
+const ArticleManagement = lazy(() => import('./pages/ArticleManagement'));
+const ArticleReading = lazy(() => import('./pages/ArticleReading'));
 
 const App: React.FC = () => {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
@@ -84,14 +86,16 @@ const App: React.FC = () => {
         </div>
       </nav>
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/word-practice" element={<WordPractice />} />
-        <Route path="/word-management" element={<WordManagement />} />
-        <Route path="/article-management" element={<ArticleManagement />} />
-        <Route path="/article-reading" element={<ArticleReading />} />
-        <Route path="/article-reading/:id" element={<ArticleReading />} />
-      </Routes>
+      <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>加载中...</div>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/word-practice" element={<WordPractice />} />
+          <Route path="/word-management" element={<WordManagement />} />
+          <Route path="/article-management" element={<ArticleManagement />} />
+          <Route path="/article-reading" element={<ArticleReading />} />
+          <Route path="/article-reading/:id" element={<ArticleReading />} />
+        </Routes>
+      </Suspense>
 
       {/* 页脚 */}
       <footer>
