@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wordking.dto.response.PronunciationResponse;
 import com.wordking.entity.Word;
 import com.wordking.mapper.WordMapper;
 import com.wordking.service.WordService;
@@ -67,5 +68,18 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         // 如果没有指定数量，默认返回10个
         Integer count = query.getCount() != null ? query.getCount() : 10;
         return wordMapper.selectRandomWords(query.getDifficulty(), count);
+    }
+    
+    @Override
+    public PronunciationResponse getPronunciation(Long id) {
+        Word word = wordMapper.selectById(id);
+        if (word == null) {
+            return null;
+        }
+        return PronunciationResponse.builder()
+                .wordId(word.getId())
+                .audioUrl("/api/words/" + word.getId() + "/audio")
+                .phonetic(word.getPhonetic())
+                .build();
     }
 }

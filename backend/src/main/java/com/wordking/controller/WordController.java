@@ -2,6 +2,7 @@ package com.wordking.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wordking.dto.request.WordQuery;
+import com.wordking.dto.response.PronunciationResponse;
 import com.wordking.dto.response.Result;
 import com.wordking.entity.Word;
 import com.wordking.service.WordService;
@@ -75,5 +76,18 @@ public class WordController {
     public Result<List<Word>> getPracticeWords(WordQuery query) {
         List<Word> words = wordService.getPracticeWords(query);
         return Result.success(words);
+    }
+    
+    /**
+     * 获取词汇发音
+     */
+    @GetMapping("/{id}/pronunciation")
+    public Result<PronunciationResponse> getPronunciation(@PathVariable Long id) {
+        PronunciationResponse pronunciation = wordService.getPronunciation(id);
+        if (pronunciation != null) {
+            return Result.success(pronunciation);
+        } else {
+            return Result.error("词汇不存在");
+        }
     }
 }

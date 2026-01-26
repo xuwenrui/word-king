@@ -11,7 +11,22 @@ interface Word {
   createdAt: string;
 }
 
-const WordManagement: React.FC = () => {
+interface WordManagementProps {
+  isDarkTheme: boolean;
+}
+
+const WordManagement: React.FC<WordManagementProps> = ({ isDarkTheme }) => {
+  // 根据主题设置颜色
+  const cardBgColor = isDarkTheme ? '#1a1a1a' : '#fff';
+  const textColor = isDarkTheme ? '#e0e0e0' : '#303133';
+  const secondaryTextColor = isDarkTheme ? '#b0b0b0' : '#909399';
+  const tertiaryTextColor = isDarkTheme ? '#909090' : '#606266';
+  const borderColor = isDarkTheme ? '#333' : '#ebeef5';
+  const inputBgColor = isDarkTheme ? '#2c2c2c' : '#fff';
+  const inputBorderColor = isDarkTheme ? '#444' : '#dcdfe6';
+  const modalBgColor = isDarkTheme ? '#1a1a1a' : '#fff';
+  const modalHeaderBgColor = isDarkTheme ? '#2c2c2c' : '#f5f7fa';
+
   const [words, setWords] = useState<Word[]>([
     {
       id: '1',
@@ -57,16 +72,33 @@ const WordManagement: React.FC = () => {
   const [typeFilter, setTypeFilter] = useState('all');
   const [tagFilter, setTagFilter] = useState('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingWordId, setEditingWordId] = useState<string | null>(null);
   const [currentWord, setCurrentWord] = useState<Partial<Word>>({
     type: 'word',
     tags: []
   });
 
-  const openModal = () => {
-    setCurrentWord({
-      type: 'word',
-      tags: []
-    });
+  const openModal = (word?: Word) => {
+    if (word) {
+      setIsEditMode(true);
+      setEditingWordId(word.id);
+      setCurrentWord({
+        english: word.english,
+        phonetic: word.phonetic,
+        chinese: word.chinese,
+        example: word.example,
+        tags: word.tags,
+        type: word.type
+      });
+    } else {
+      setIsEditMode(false);
+      setEditingWordId(null);
+      setCurrentWord({
+        type: 'word',
+        tags: []
+      });
+    }
     setIsModalOpen(true);
   };
 
@@ -88,18 +120,31 @@ const WordManagement: React.FC = () => {
       return;
     }
 
-    const newWord: Word = {
-      id: Date.now().toString(),
-      english: currentWord.english!,
-      phonetic: currentWord.phonetic,
-      chinese: currentWord.chinese!,
-      example: currentWord.example,
-      tags: currentWord.tags || [],
-      type: currentWord.type || 'word',
-      createdAt: new Date().toISOString().split('T')[0]
-    };
-
-    setWords(prev => [newWord, ...prev]);
+    if (isEditMode && editingWordId) {
+      setWords(prev => prev.map(word => 
+        word.id === editingWordId ? {
+          ...word,
+          english: currentWord.english!,
+          phonetic: currentWord.phonetic,
+          chinese: currentWord.chinese!,
+          example: currentWord.example,
+          tags: currentWord.tags || [],
+          type: currentWord.type || 'word'
+        } : word
+      ));
+    } else {
+      const newWord: Word = {
+        id: Date.now().toString(),
+        english: currentWord.english!,
+        phonetic: currentWord.phonetic,
+        chinese: currentWord.chinese!,
+        example: currentWord.example,
+        tags: currentWord.tags || [],
+        type: currentWord.type || 'word',
+        createdAt: new Date().toISOString().split('T')[0]
+      };
+      setWords(prev => [newWord, ...prev]);
+    }
     closeModal();
   };
 

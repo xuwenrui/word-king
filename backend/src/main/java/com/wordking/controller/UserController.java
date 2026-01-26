@@ -1,6 +1,9 @@
 package com.wordking.controller;
 
+import com.wordking.dto.request.LoginRequest;
+import com.wordking.dto.response.LoginResponse;
 import com.wordking.dto.response.Result;
+import com.wordking.dto.response.UserProgressResponse;
 import com.wordking.entity.User;
 import com.wordking.service.UserService;
 import jakarta.validation.Valid;
@@ -13,6 +16,19 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     
     private final UserService userService;
+    
+    /**
+     * 用户登录
+     */
+    @PostMapping("/login")
+    public Result<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        LoginResponse response = userService.login(request);
+        if (response != null) {
+            return Result.success("登录成功", response);
+        } else {
+            return Result.error("用户名或密码错误");
+        }
+    }
     
     /**
      * 获取用户信息
@@ -65,6 +81,19 @@ public class UserController {
             return Result.success("删除成功");
         } else {
             return Result.error("删除失败");
+        }
+    }
+    
+    /**
+     * 获取用户学习进度
+     */
+    @GetMapping("/{id}/progress")
+    public Result<UserProgressResponse> getUserProgress(@PathVariable Long id) {
+        UserProgressResponse progress = userService.getUserProgress(id);
+        if (progress != null) {
+            return Result.success(progress);
+        } else {
+            return Result.error("用户不存在");
         }
     }
 }

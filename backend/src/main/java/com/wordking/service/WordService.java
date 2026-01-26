@@ -2,6 +2,7 @@ package com.wordking.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wordking.dto.response.PronunciationResponse;
 import com.wordking.entity.Word;
 import com.wordking.dto.request.WordQuery;
 
@@ -37,4 +38,9 @@ public interface WordService {
      * 获取练习用词汇
      */
     List<Word> getPracticeWords(WordQuery query);
+    
+    /**
+     * 获取词汇发音
+     */
+    PronunciationResponse getPronunciation(Long id);
 }

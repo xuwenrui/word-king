@@ -113,7 +113,9 @@ const WordPractice: React.FC<WordPracticeProps> = ({ isDarkTheme }) => {
         newLetterStates[currentIndex] = 'incorrect';
       }
 
-      newLetterStates[currentIndex] = newLetterStates[currentIndex].replace('active', '');
+      const state = newLetterStates[currentIndex];
+      // state is already 'correct' or 'incorrect', simply assign it
+      newLetterStates[currentIndex] = state;
       if (currentIndex + 1 < currentWord.word.length) {
         newLetterStates[currentIndex + 1] = 'active';
       }
@@ -151,7 +153,7 @@ const WordPractice: React.FC<WordPracticeProps> = ({ isDarkTheme }) => {
       setCorrectCount(correctCount + 1);
 
       const newLetterStates = letterStates.map(() => 'correct');
-      setLetterStates(newLetterStates);
+      setLetterStates(newLetterStates as Array<'' | 'correct' | 'incorrect' | 'active'>);
 
       setTimeout(() => {
         nextWord();

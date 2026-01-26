@@ -17,7 +17,7 @@ const Home: React.FC<HomeProps> = ({ isDarkTheme }) => {
   return (
     <div className="home" style={{ backgroundColor: isDarkTheme ? '#121212' : '#fff' }}>
       {/* 英雄区域 */}
-      <section className="hero" style={{ backgroundColor: heroBgColor, color: heroTextColor }}>
+      <section className="hero" style={{ backgroundColor: isDarkTheme ? '#000000' : '#f5f7fa', color: heroTextColor }}>
         <div className="container">
           <h1 style={{ color: heroTextColor }}>掌握英语，从单词开始</h1>
           <p style={{ color: heroSubTextColor }}>Word King 是一款专业的英语单词学习助手，帮助您高效管理单词、练习拼写、通过阅读提升英语水平。</p>
