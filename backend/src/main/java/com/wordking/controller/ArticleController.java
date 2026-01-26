@@ -1,5 +1,6 @@
 package com.wordking.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wordking.dto.request.ArticleQuery;
 import com.wordking.dto.response.Result;
 import com.wordking.entity.Article;
@@ -20,7 +21,7 @@ public class ArticleController {
      */
     @GetMapping
     public Result<?> getArticles(ArticleQuery query) {
-        var articles = articleService.getArticles(query);
+        IPage<Article> articles = articleService.getArticles(query);
         return Result.success(articles);
     }
     

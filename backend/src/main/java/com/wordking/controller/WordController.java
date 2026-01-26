@@ -1,5 +1,6 @@
 package com.wordking.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wordking.dto.request.WordQuery;
 import com.wordking.dto.response.Result;
 import com.wordking.entity.Word;
@@ -22,7 +23,7 @@ public class WordController {
      */
     @GetMapping
     public Result<?> getWords(WordQuery query) {
-        var words = wordService.getWords(query);
+        IPage<Word> words = wordService.getWords(query);
         return Result.success(words);
     }
     

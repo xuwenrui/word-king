@@ -5,24 +5,26 @@ spring:
   application:
     name: word-king-backend
   datasource:
-    url: jdbc:db2://localhost:50000/WORDKING
-    username: dbuser
-    password: dbpass
-    driver-class-name: com.ibm.db2.jcc.DB2Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
+  h2:
+    console:
+      enabled: true
 
 mybatis-plus:
-  mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.wordking.entity
-  global-config:
-    db-config:
-      id-type: auto
-      table-prefix: T_
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: true
+  global-config:
+    db-config:
+      id-type: auto
+      table-prefix: t_
 
 logging:
   config: classpath:logback-spring.xml
