@@ -2,14 +2,14 @@
 
 ## 1. 技术栈
 
-- **编程语言**: Java 21
-- **框架**: Spring Boot 3.x
-- **持久层框架**: MyBatis-Plus 3.x
-- **数据库**: IBM DB2
+- **编程语言**: Java 17
+- **框架**: Spring Boot 3.0.0
+- **持久层框架**: MyBatis-Plus 3.5.15 (Spring Boot 3兼容版本)
+- **数据库**: H2 Database (开发环境) / IBM DB2 (生产环境)
 - **构建工具**: Maven
 - **注解库**: Lombok
 - **日志框架**: Logback
-- **API 文档**: Swagger/OpenAPI
+- **API 文档**: Springdoc OpenAPI 2.3.0
 - **安全框架**: Spring Security
 
 ## 2. 项目结构
@@ -25,9 +25,7 @@ backend/
 │       │           ├── WordKingApplication.java
 │       │           ├── config/              # 配置类
 │       │           │   ├── MyBatisPlusConfig.java
-│       │           │   ├── WebSecurityConfig.java
-│       │           │   ├── SwaggerConfig.java
-│       │           │   └── CorsConfig.java
+│       │           │   └── BeanConfig.java
 │       │           ├── controller/          # 控制层
 │       │           │   ├── WordController.java
 │       │           │   ├── ArticleController.java
@@ -38,26 +36,37 @@ backend/
 │       │           │   ├── ArticleService.java
 │       │           │   ├── PracticeService.java
 │       │           │   └── UserService.java
+│       │           ├── service/impl/        # 业务逻辑实现层
+│       │           │   ├── WordServiceImpl.java
+│       │           │   ├── ArticleServiceImpl.java
+│       │           │   ├── PracticeServiceImpl.java
+│       │           │   └── UserServiceImpl.java
 │       │           ├── mapper/              # 数据访问层
 │       │           │   ├── WordMapper.java
 │       │           │   ├── ArticleMapper.java
-│       │           │   ├── PracticeMapper.java
+│       │           │   ├── PracticeRecordMapper.java
+│       │           │   ├── PracticeSessionMapper.java
 │       │           │   └── UserMapper.java
 │       │           ├── entity/              # 实体类
 │       │           │   ├── Word.java
 │       │           │   ├── Article.java
+│       │           │   ├── PracticeRecord.java
 │       │           │   ├── PracticeSession.java
 │       │           │   └── User.java
 │       │           ├── dto/                 # 数据传输对象
 │       │           │   ├── request/
+│       │           │   │   ├── WordQuery.java
+│       │           │   │   └── ArticleQuery.java
 │       │           │   └── response/
-│       │           ├── vo/                  # 视图对象
+│       │           │       └── Result.java
 │       │           └── exception/           # 异常处理
 │       │               └── GlobalExceptionHandler.java
 │       └── resources/
 │           ├── application.yml             # 配置文件
-│           ├── mapper/                     # MyBatis XML 文件
+│           ├── application.properties
 │           └── logback-spring.xml          # 日志配置
+├── README.md
+└── target/                          # 编译输出目录
 ```
 
 ## 3. 数据库设计
@@ -255,16 +264,20 @@ public interface WordMapper extends BaseMapper<Word> {
 public class MyBatisPlusConfig {
     
     @Bean
-    public MybatisPlusInterceptor mybatisPlusInterceptor() {
-        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        // 分页插件
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.DB2));
-        return interceptor;
+    public DataSource dataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("org.h2.Driver");
+        dataSource.setUrl("jdbc:h2:mem:testdb");
+        dataSource.setUsername("sa");
+        dataSource.setPassword("");
+        return dataSource;
     }
     
     @Bean
-    public MetaObjectHandler metaObjectHandler() {
-        return new MyMetaObjectHandler();
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+        MybatisSqlSessionFactoryBean factoryBean = new MybatisSqlSessionFactoryBean();
+        factoryBean.setDataSource(dataSource);
+        return factoryBean.getObject();
     }
 }
 ```
@@ -417,24 +430,26 @@ spring:
   application:
     name: word-king-backend
   datasource:
-    url: jdbc:db2://localhost:50000/WORDKING
-    username: dbuser
-    password: dbpass
-    driver-class-name: com.ibm.db2.jcc.DB2Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
+  h2:
+    console:
+      enabled: true
 
 mybatis-plus:
-  mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.wordking.entity
-  global-config:
-    db-config:
-      id-type: auto
-      table-prefix: T_
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: true
+  global-config:
+    db-config:
+      id-type: auto
+      table-prefix: t_
 
 logging:
   config: classpath:logback-spring.xml
@@ -575,3 +590,20 @@ public class CacheConfig {
 - 合理设计数据库索引
 - 使用连接池优化数据库连接
 - SQL 优化，避免 N+1 查询问题
+
+## 13. 重要说明
+
+### 13.1 Spring Boot 3.x 兼容性
+- 使用 `mybatis-plus-spring-boot3-starter` 而非 `mybatis-plus-boot-starter`
+- 所有 `javax.*` 包名改为 `jakarta.*`（如 `javax.validation` → `jakarta.validation`）
+- 确保DataSource配置正确，使用 `javax.sql.DataSource`
+
+### 13.2 开发环境配置
+- 开发环境使用 H2 内存数据库，无需额外配置
+- H2 控制台可通过 `http://localhost:8080/h2-console` 访问
+- 数据库连接信息：`jdbc:h2:mem:testdb`，用户名：`sa`，密码：空
+
+### 13.3 API 文档
+- 使用 Springdoc OpenAPI 生成 API 文档
+- Swagger UI 访问地址：`http://localhost:8080/swagger-ui.html`
+- OpenAPI JSON 访问地址：`http://localhost:8080/v3/api-docs`
