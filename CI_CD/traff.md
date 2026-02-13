@@ -1,0 +1,5 @@
+1.requirement 目录下所有改动都提交到feature/ui-desiger-bot分支
+2.frontend 目录下所有修改提交到feature/frontend-bot分支
+3.backend 目录下所有修改提交到feature/backend-bot分支
+
+各自文件夹里的改动提交到对应的分支一位置每次提交前需要保证当前分支是干净的，要pull到最新代码再提交，对应这些后面的重复的操作，将这些操作步骤保存为你能理解的文件，描述或者脚本。deepseek建议使用agents/orchestrator.py - 中央协调器，但是我没明白具体如何实时，给出你的实时计划
