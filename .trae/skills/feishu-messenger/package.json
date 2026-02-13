@@ -1,0 +1,23 @@
+{
+  "name": "feishu-messenger-skill",
+  "version": "1.0.0",
+  "description": "Feishu (Lark) messenger skill for sending notifications",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js",
+    "send-notification": "node send-notification.js"
+  },
+  "keywords": [
+    "feishu",
+    "lark",
+    "messenger",
+    "notification",
+    "skill"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.0"
+  }
+}
