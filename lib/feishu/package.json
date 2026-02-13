@@ -1,0 +1,36 @@
+{
+  "name": "feishu-messenger",
+  "version": "1.0.0",
+  "description": "Feishu (Lark) bot messenger MCP server for Trae",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "node tests/test-config.js && node tests/test-send-message.js",
+    "test:messenger": "node tests/test-config.js",
+    "test:send": "node tests/test-send-message.js"
+  },
+  "keywords": [
+    "feishu",
+    "lark",
+    "mcp",
+    "bot",
+    "messenger"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "axios": "^1.7.9",
+    "dotenv": "^17.3.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "directories": {
+    "src": "src",
+    "test": "tests",
+    "doc": "docs"
+  }
+}
