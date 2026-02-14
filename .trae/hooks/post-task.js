@@ -1,4 +1,4 @@
-const { sendTaskCompleteNotification } = require('../skills/feishu-messenger/index.js');
+import { sendTaskCompleteNotification } from '../skills/feishu-messenger/index.js';
 
 // 飞书群组ID
 const RECEIVE_ID = 'oc_800bf2ea6f68216ca816fd64d8d6d906';
@@ -71,12 +71,12 @@ async function postTaskHook(taskContext = {}) {
 /**
  * 导出钩子函数
  */
-module.exports = postTaskHook;
+export default postTaskHook;
 
 /**
  * 如果直接执行此脚本，则发送测试通知
  */
-if (require.main === module) {
+if (import.meta.url.startsWith('file://')) {
   // 测试任务上下文
   const testTaskContext = {
     taskName: '测试任务',
