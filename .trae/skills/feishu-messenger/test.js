@@ -1,4 +1,4 @@
-const { sendTextMessage, sendTaskCompleteNotification } = require('./index.js');
+import { sendTextMessage, sendTaskCompleteNotification } from './index.js';
 
 // 测试的接收者ID（群组ID）
 const RECEIVE_ID = 'oc_800bf2ea6f68216ca816fd64d8d6d906';

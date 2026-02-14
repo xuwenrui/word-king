@@ -1,35 +1,40 @@
-const axios = require('axios');
-const dotenv = require('dotenv');
+import axios from 'axios';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-// 加载环境变量
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// 加载环境变量 - 从lib/feishu/.env加载，与能正常工作的版本保持一致
+dotenv.config({ path: join(__dirname, '..', '..', '..', 'lib', 'feishu', '.env') });
 
 class FeishuMessenger {
   constructor() {
     this.appId = process.env.FEISHU_APP_ID;
     this.appSecret = process.env.FEISHU_APP_SECRET;
-    this.tenantAccessToken = process.env.FEISHU_TENANT_ACCESS_TOKEN;
+    this.baseUrl = 'https://open.feishu.cn/open-apis';
+    this.tenantAccessToken = null;
+    this.tokenExpireTime = null;
   }
 
   /**
    * 获取租户访问令牌
    */
   async getTenantAccessToken() {
-    if (this.tenantAccessToken) {
+    if (this.tenantAccessToken && this.tokenExpireTime > Date.now()) {
       return this.tenantAccessToken;
     }
 
     try {
-      const response = await axios.post(
-        'https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal',
-        {
-          app_id: this.appId,
-          app_secret: this.appSecret
-        }
-      );
+      const response = await axios.post(`${this.baseUrl}/auth/v3/tenant_access_token/internal`, {
+        app_id: this.appId,
+        app_secret: this.appSecret
+      });
 
       if (response.data.code === 0) {
         this.tenantAccessToken = response.data.tenant_access_token;
+        this.tokenExpireTime = Date.now() + (response.data.expire - 60) * 1000;
         return this.tenantAccessToken;
       } else {
         throw new Error(`获取租户访问令牌失败: ${response.data.msg}`);
@@ -49,14 +54,37 @@ class FeishuMessenger {
   async sendMessage(receiveId, msgType, content) {
     try {
       const token = await this.getTenantAccessToken();
-      
+
+      // Determine receive_id_type based on the receive_id prefix
+      let receiveIdType = 'open_id'; // default
+      if (receiveId.startsWith('oc_')) {
+        receiveIdType = 'chat_id';
+      } else if (receiveId.startsWith('ou_')) {
+        receiveIdType = 'open_id';
+      } else if (receiveId.startsWith('on_')) {
+        receiveIdType = 'union_id';
+      }
+
+      // Build request body based on receive_id_type
+      let requestBody = {
+        msg_type: msgType,
+        content: content,
+      };
+
+      // Add the appropriate ID field based on type
+      if (receiveIdType === 'chat_id') {
+        requestBody.chat_id = receiveId;
+      } else if (receiveIdType === 'open_id') {
+        requestBody.open_id = receiveId;
+      } else if (receiveIdType === 'union_id') {
+        requestBody.union_id = receiveId;
+      } else {
+        requestBody.user_id = receiveId;
+      }
+
       const response = await axios.post(
-        'https://open.feishu.cn/open-apis/message/v4/send',
-        {
-          receive_id: receiveId,
-          msg_type: msgType,
-          content: JSON.stringify(content)
-        },
+        `${this.baseUrl}/message/v4/send`,
+        requestBody,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -80,7 +108,7 @@ class FeishuMessenger {
       console.error('发送消息错误:', error);
       return {
         success: false,
-        error: error.message
+        error: error.response?.data || error.message
       };
     }
   }
@@ -103,7 +131,7 @@ class FeishuMessenger {
    * @param {object} card - 卡片内容
    */
   async sendInteractiveCard(receiveId, card) {
-    return this.sendMessage(receiveId, 'interactive', { card: card });
+    return this.sendMessage(receiveId, 'interactive', card);
   }
 
   /**
@@ -160,21 +188,21 @@ class FeishuMessenger {
 }
 
 // 导出飞书消息发送器模块
-module.exports = FeishuMessenger;
+export default FeishuMessenger;
 
 // 导出默认实例
 const messenger = new FeishuMessenger();
-module.exports.messenger = messenger;
+export { messenger };
 
 // 导出工具函数
-module.exports.sendTextMessage = async (receiveId, text) => {
+export const sendTextMessage = async (receiveId, text) => {
   return messenger.sendTextMessage(receiveId, text);
 };
 
-module.exports.sendInteractiveCard = async (receiveId, card) => {
+export const sendInteractiveCard = async (receiveId, card) => {
   return messenger.sendInteractiveCard(receiveId, card);
 };
 
-module.exports.sendTaskCompleteNotification = async (receiveId, taskResult) => {
+export const sendTaskCompleteNotification = async (receiveId, taskResult) => {
   return messenger.sendTaskCompleteNotification(receiveId, taskResult);
 };

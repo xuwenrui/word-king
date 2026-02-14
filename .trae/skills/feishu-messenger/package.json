@@ -2,6 +2,7 @@
   "name": "feishu-messenger-skill",
   "version": "1.0.0",
   "description": "Feishu (Lark) messenger skill for sending notifications",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "node test.js",
